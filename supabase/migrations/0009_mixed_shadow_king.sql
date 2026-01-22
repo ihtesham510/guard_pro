@@ -1,0 +1,1 @@
+ALTER TABLE "shift" ADD COLUMN "terminated" boolean DEFAULT false NOT NULL;

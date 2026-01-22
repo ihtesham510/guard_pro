@@ -1,0 +1,11 @@
+mobile
+.vercel
+.nitro
+.tanstack
+android 
+ios
+build
+.build
+
+# files
+*.gen.ts

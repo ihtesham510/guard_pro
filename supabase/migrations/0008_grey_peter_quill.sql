@@ -1,0 +1,2 @@
+ALTER TABLE "timeEntry" ADD COLUMN "site_id" uuid NOT NULL;--> statement-breakpoint
+ALTER TABLE "timeEntry" ADD CONSTRAINT "timeEntry_site_id_site_id_fk" FOREIGN KEY ("site_id") REFERENCES "public"."site"("id") ON DELETE cascade ON UPDATE no action;

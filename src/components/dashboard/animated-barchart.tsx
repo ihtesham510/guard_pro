@@ -150,7 +150,7 @@ const CustomReferenceLabel: React.FC<CustomReferenceLabelProps> = props => {
 		const characterWidth = 8
 		const padding = 10
 		return value.toString().length * characterWidth + padding
-	}, [value])
+	}, [])
 
 	return (
 		<>

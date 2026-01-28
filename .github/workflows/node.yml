@@ -1,0 +1,20 @@
+name: Check lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # Checkout the repository code
+      - uses: oven-sh/setup-bun@v1 # Setup Bun
+        with:
+          bun-version: latest # Use the latest Bun version, or specify "1.0.x"
+      - run: bun install # Install dependencies
+      - run: bun lint # Run tests

@@ -1,3 +1,1 @@
-bunx biome lint  
-bun build 
-bunx biome format
+bunx biome lint  && bunx tsc

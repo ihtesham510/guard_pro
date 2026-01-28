@@ -1,8 +1,8 @@
-import { siteQueries } from '@/services/queries'
-import { DashboardTitle } from '../dashboard-title'
-import { EventsCalendar } from '@/components/utils/event-calendar'
 import { useQuery } from '@tanstack/react-query'
 import { getRouteApi } from '@tanstack/react-router'
+import { DashboardTitle } from '@/components/dashboard/dashboard-title'
+import { EventsCalendar } from '@/components/utils/event-calendar'
+import { siteQueries } from '@/services/queries'
 
 const routeApi = getRouteApi('/dashboard/sites/$siteId')
 

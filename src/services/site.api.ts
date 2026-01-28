@@ -1,12 +1,15 @@
 import { createMiddleware, createServerFn, json } from '@tanstack/react-start'
-import { siteInsertSchemaWithAddress, sitePicturesInsertSchema } from './site.schema'
+import { and, eq } from 'drizzle-orm'
 import z from 'zod'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
-import { eq, and } from 'drizzle-orm'
-import { userRequiredMiddleware } from './auth.api'
-import { addAddress, updateAddress } from './address.api'
-import { supabaseMiddleWare } from './supabase'
+import { addAddress, updateAddress } from '@/services/address.api'
+import { userRequiredMiddleware } from '@/services/auth.api'
+import {
+	siteInsertSchemaWithAddress,
+	sitePicturesInsertSchema,
+} from '@/services/site.schema'
+import { supabaseMiddleWare } from '@/services/supabase'
 
 export const siteMiddleWare = createMiddleware({ type: 'function' })
 	.middleware([userRequiredMiddleware])
@@ -86,10 +89,17 @@ export const updateSite = createServerFn({ method: 'POST' })
 			await updateAddress({ id: site.address, data: address })
 		} else if (address) {
 			const addressId = await addAddress(address)
-			await db.update(schema.site).set({ address: addressId }).where(eq(schema.site.id, id))
+			await db
+				.update(schema.site)
+				.set({ address: addressId })
+				.where(eq(schema.site.id, id))
 		}
 
-		return await db.update(schema.site).set(siteData).where(eq(schema.site.id, id)).returning()
+		return await db
+			.update(schema.site)
+			.set(siteData)
+			.where(eq(schema.site.id, id))
+			.returning()
 	})
 
 export const deleteSite = createServerFn({ method: 'POST' })
@@ -107,7 +117,10 @@ export const deleteSites = createServerFn({ method: 'POST' })
 	.handler(async ({ data }) => {
 		const [res] = await Promise.all(
 			data.map(async id => {
-				return await db.delete(schema.site).where(eq(schema.site.id, id)).returning({ deletedId: schema.site.id })
+				return await db
+					.delete(schema.site)
+					.where(eq(schema.site.id, id))
+					.returning({ deletedId: schema.site.id })
 			}),
 		)
 		return res
@@ -124,12 +137,17 @@ export const deleteSitePicture = createServerFn({ method: 'POST' })
 			},
 		})
 		if (!picture) throw json('picture not found', { status: 404 })
-		const { data, error } = await supabase.storage.from('site_pictrues').remove([picture.storageId])
+		const { data, error } = await supabase.storage
+			.from('site_pictrues')
+			.remove([picture.storageId])
 		if (error) {
 			throw json('error while deleting picture from storage', { status: 500 })
 		}
 		if (data) {
-			return await db.delete(schema.sitePictures).where(eq(schema.sitePictures.id, picture.id)).returning()
+			return await db
+				.delete(schema.sitePictures)
+				.where(eq(schema.sitePictures.id, picture.id))
+				.returning()
 		}
 	})
 
@@ -147,7 +165,9 @@ export const uploadSitePictures = createServerFn({ method: 'POST' })
 	.handler(async ({ data: files, context: { supabase } }) => {
 		const uploadPromises = files.map(async file => {
 			const timestamp = Date.now()
-			const randomId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+			const randomId =
+				Math.random().toString(36).substring(2, 15) +
+				Math.random().toString(36).substring(2, 15)
 			const fileExtension = file.name.split('.').pop() || 'jpg'
 			const fileName = `${timestamp}-${randomId}.${fileExtension}`
 			const filePath = fileName
@@ -156,15 +176,21 @@ export const uploadSitePictures = createServerFn({ method: 'POST' })
 			const binaryString = Buffer.from(base64Data, 'base64')
 			const blob = new Blob([binaryString], { type: file.type || 'image/jpeg' })
 
-			const uploadRes = await supabase.storage.from('site_pictures').upload(filePath, blob, {
-				contentType: file.type || 'image/jpeg',
-			})
+			const uploadRes = await supabase.storage
+				.from('site_pictures')
+				.upload(filePath, blob, {
+					contentType: file.type || 'image/jpeg',
+				})
 
 			if (uploadRes.error) {
-				throw json(`Error uploading picture: ${uploadRes.error.message}`, { status: 500 })
+				throw json(`Error uploading picture: ${uploadRes.error.message}`, {
+					status: 500,
+				})
 			}
 
-			const { data: urlData } = supabase.storage.from('site_pictures').getPublicUrl(filePath)
+			const { data: urlData } = supabase.storage
+				.from('site_pictures')
+				.getPublicUrl(filePath)
 
 			return {
 				url: urlData.publicUrl,

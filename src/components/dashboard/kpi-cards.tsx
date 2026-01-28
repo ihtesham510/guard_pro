@@ -1,5 +1,12 @@
+import {
+	AlertTriangle,
+	DollarSign,
+	Shield,
+	TrendingDown,
+	TrendingUp,
+	Users,
+} from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Users, AlertTriangle, Shield, DollarSign, TrendingUp, TrendingDown } from 'lucide-react'
 
 const kpiData = [
 	{
@@ -41,7 +48,9 @@ export function KPICards() {
 			{kpiData.map(kpi => (
 				<Card key={kpi.title}>
 					<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-						<CardTitle className='text-sm font-medium text-muted-foreground'>{kpi.title}</CardTitle>
+						<CardTitle className='text-sm font-medium text-muted-foreground'>
+							{kpi.title}
+						</CardTitle>
 						<kpi.icon className={`h-5 w-5 ${kpi.color}`} />
 					</CardHeader>
 					<CardContent>
@@ -52,7 +61,13 @@ export function KPICards() {
 							) : (
 								<TrendingDown className='h-3 w-3 text-red-600' />
 							)}
-							<span className={kpi.trend === 'up' ? 'text-green-600' : 'text-red-600'}>{kpi.change}</span>
+							<span
+								className={
+									kpi.trend === 'up' ? 'text-green-600' : 'text-red-600'
+								}
+							>
+								{kpi.change}
+							</span>
 							<span>from last week</span>
 						</div>
 					</CardContent>

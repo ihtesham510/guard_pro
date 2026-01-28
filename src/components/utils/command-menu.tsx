@@ -1,3 +1,6 @@
+import { useRouter } from '@tanstack/react-router'
+import { Building2, ClockIcon, Navigation, User } from 'lucide-react'
+import React from 'react'
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -6,12 +9,9 @@ import {
 	CommandItem,
 	CommandList,
 } from '@/components/ui/command'
+import type { DialogType } from '@/context/app-context'
 import { useAppState } from '@/context/app-context'
-import { DialogType } from '@/context/app-context'
 import { useRoutes } from '@/hooks/use-routes'
-import { useRouter } from '@tanstack/react-router'
-import { Building2, ClockIcon, Navigation, User } from 'lucide-react'
-import React from 'react'
 
 export function CommandMenu() {
 	const { dialogs } = useAppState()
@@ -27,6 +27,7 @@ export function CommandMenu() {
 		dialogs.setState('command-menu', false)
 	}
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <setOpen cannot be passed as a dependency>
 	React.useEffect(() => {
 		const down = (e: KeyboardEvent) => {
 			if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
@@ -36,7 +37,7 @@ export function CommandMenu() {
 		}
 		document.addEventListener('keydown', down)
 		return () => document.removeEventListener('keydown', down)
-	}, [])
+	}, [open])
 
 	return (
 		<CommandDialog open={open} onOpenChange={setOpen}>
@@ -49,6 +50,7 @@ export function CommandMenu() {
 							.filter(route => route.title !== 'Search')
 							.map(route => (
 								<CommandItem
+									key={route.href?.to}
 									onSelect={() => {
 										router.navigate({
 											to: route.href?.to,

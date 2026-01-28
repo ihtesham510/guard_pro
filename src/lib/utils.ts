@@ -6,7 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 export const randomEmployeeCode: string = generateEmployeeCode()
 
-export function generateEmployeeCode(prefixLength = 3, totalLength = 8): string {
+export function generateEmployeeCode(
+	prefixLength = 3,
+	totalLength = 8,
+): string {
 	const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 	const digits = '0123456789'
 
@@ -50,9 +53,15 @@ interface TrendResult {
  * @param threshold - Optional threshold for considering values as stable (default: 0)
  * @returns TrendResult object with trend direction, absolute change, and percentage change
  */
-export function getTrend(previousValue: number, currentValue: number, threshold: number = 0): TrendResult {
+export function getTrend(
+	previousValue: number,
+	currentValue: number,
+	threshold: number = 0,
+): TrendResult {
 	const change = currentValue - previousValue
-	const percentageChange = floorToOneDecimal(previousValue !== 0 ? (change / Math.abs(previousValue)) * 100 : 0)
+	const percentageChange = floorToOneDecimal(
+		previousValue !== 0 ? (change / Math.abs(previousValue)) * 100 : 0,
+	)
 
 	let trend: Trend
 

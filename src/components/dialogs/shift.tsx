@@ -1,35 +1,62 @@
-import { useAppState } from '@/context/app-context'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { DollarSign, PenIcon } from 'lucide-react'
-import Stepper, { Step } from '../Stepper'
-import { FieldSet, FieldLegend, FieldDescription, Field, FieldGroup, FieldLabel } from '../ui/field'
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '../ui/form'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import type z from 'zod'
+import Stepper, { Step } from '@/components/Stepper'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+	Field,
+	FieldDescription,
+	FieldGroup,
+	FieldLabel,
+	FieldLegend,
+	FieldSet,
+} from '@/components/ui/field'
+import {
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@/components/ui/input-group'
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover'
 import {
 	ResponsiveDialog,
 	ResponsiveDialogContent,
 	ResponsiveDialogForm,
 	ResponsiveDialogHeader,
 	ResponsiveDialogTitle,
-} from '../ui/responsive-dialog'
-import { useForm } from 'react-hook-form'
-import { useIsMobile } from '@/hooks/use-mobile'
-import { useState, useEffect } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { siteQueries } from '@/services/queries'
-import { shiftInsertSchema } from '@/services/shift.schema'
-import { addShift } from '@/services/shift.api'
-import z from 'zod'
-import { Checkbox } from '../ui/checkbox'
-import { Calendar } from '../ui/calendar'
-import { TimePicker, type TimeValue } from '../ui/time-picker'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
-import { Input } from '../ui/input'
+} from '@/components/ui/responsive-dialog'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { TimePicker, type TimeValue } from '@/components/ui/time-picker'
+import { Toggle } from '@/components/ui/toggle'
+import { useAppState } from '@/context/app-context'
 import { enums } from '@/db/schema'
-import { Toggle } from '../ui/toggle'
-import { Textarea } from '../ui/textarea'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { Button } from '../ui/button'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { siteQueries } from '@/services/queries'
+import { addShift } from '@/services/shift.api'
+import { shiftInsertSchema } from '@/services/shift.schema'
 
 const schema = shiftInsertSchema
 
@@ -49,7 +76,11 @@ export function ShiftDialog({
 	const addShiftMutation = useMutation({
 		mutationFn: addShift,
 		meta: {
-			invalidateQuries: ['getShifts', 'getSiteShifts', 'getEmployeesWithShifts'],
+			invalidateQuries: [
+				'getShifts',
+				'getSiteShifts',
+				'getEmployeesWithShifts',
+			],
 			successMessage: 'Shift added successfully',
 			errorMessage: 'Error while adding shift',
 		},
@@ -73,7 +104,9 @@ export function ShiftDialog({
 				...values,
 				end_date: values.type === 'one_time' ? values.end_date : undefined,
 				pay_rate: String(values.pay_rate),
-				overTime_multiplyer: values.overTime_multiplyer ? String(values.overTime_multiplyer) : undefined,
+				overTime_multiplyer: values.overTime_multiplyer
+					? String(values.overTime_multiplyer)
+					: undefined,
 			},
 		})
 		form.reset()
@@ -88,16 +121,24 @@ export function ShiftDialog({
 	}, [dialogs.state['add-shift'], form])
 
 	function renderWeek(str: string) {
-		return str.slice(0, 3).charAt(0).toUpperCase() + str.slice(1, 3).toLowerCase()
+		return (
+			str.slice(0, 3).charAt(0).toUpperCase() + str.slice(1, 3).toLowerCase()
+		)
 	}
 
 	return (
 		<ResponsiveDialog
 			open={typeof open !== 'undefined' ? open : dialogs.state['add-shift']}
-			onOpenChange={e => (onOpenChange ? onOpenChange(e) : dialogs.setState('add-shift', e))}
+			onOpenChange={e =>
+				onOpenChange ? onOpenChange(e) : dialogs.setState('add-shift', e)
+			}
 		>
 			<ResponsiveDialogContent className='min-w-full md:min-w-[560px] max-w-max'>
-				<ResponsiveDialogForm form={form} onSubmit={form.handleSubmit(handleSubmit)} className='min-w-max'>
+				<ResponsiveDialogForm
+					form={form}
+					onSubmit={form.handleSubmit(handleSubmit)}
+					className='min-w-max'
+				>
 					<ResponsiveDialogHeader>
 						<ResponsiveDialogTitle>Add Shift</ResponsiveDialogTitle>
 					</ResponsiveDialogHeader>
@@ -111,7 +152,9 @@ export function ShiftDialog({
 						<Step>
 							<FieldSet>
 								<FieldLegend>Select Site and Employee</FieldLegend>
-								<FieldDescription>Select site and employee to assign the shift.</FieldDescription>
+								<FieldDescription>
+									Select site and employee to assign the shift.
+								</FieldDescription>
 								<FieldGroup>
 									<FormField
 										control={form.control}
@@ -120,7 +163,11 @@ export function ShiftDialog({
 											<FormItem>
 												<FormLabel>Shift Name (optional)</FormLabel>
 												<FormControl>
-													<Input {...field} placeholder='name' value={field.value ?? undefined} />
+													<Input
+														{...field}
+														placeholder='name'
+														value={field.value ?? undefined}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -134,7 +181,10 @@ export function ShiftDialog({
 											<FormItem>
 												<FormLabel>Select Site</FormLabel>
 												<FormControl>
-													<Select value={field.value} onValueChange={val => field.onChange(val)}>
+													<Select
+														value={field.value}
+														onValueChange={val => field.onChange(val)}
+													>
 														<SelectTrigger className='w-full'>
 															<SelectValue placeholder='site' />
 														</SelectTrigger>
@@ -158,7 +208,9 @@ export function ShiftDialog({
 						<Step>
 							<FieldSet>
 								<FieldLegend>Select Date Range</FieldLegend>
-								<FieldDescription>Select date range for the shift.</FieldDescription>
+								<FieldDescription>
+									Select date range for the shift.
+								</FieldDescription>
 								<FieldGroup className='flex items-center justify-center min-w-max'>
 									<FormField
 										control={form.control}
@@ -168,14 +220,19 @@ export function ShiftDialog({
 												<FormItem className='w-full'>
 													<FormLabel>Shift type</FormLabel>
 													<FormControl>
-														<Select onValueChange={e => field.onChange(e)} {...field}>
+														<Select
+															onValueChange={e => field.onChange(e)}
+															{...field}
+														>
 															<SelectTrigger className='w-full'>
 																<SelectValue placeholder='select' />
 															</SelectTrigger>
 															<SelectContent>
 																{enums.shiftType.map(type => (
 																	<SelectItem key={type} value={type}>
-																		{type === 'one_time' ? 'One Time' : 'Recurring'}
+																		{type === 'one_time'
+																			? 'One Time'
+																			: 'Recurring'}
 																	</SelectItem>
 																))}
 															</SelectContent>
@@ -194,7 +251,10 @@ export function ShiftDialog({
 												<FormItem className='w-full'>
 													<FormControl>
 														<Field orientation='horizontal'>
-															<Checkbox checked={field.value ?? false} onCheckedChange={field.onChange} />
+															<Checkbox
+																checked={field.value ?? false}
+																onCheckedChange={field.onChange}
+															/>
 															<FieldLabel>every day</FieldLabel>
 														</Field>
 													</FormControl>
@@ -213,14 +273,18 @@ export function ShiftDialog({
 														variant='outline'
 														pressed={!form.watch('off_days')?.includes(day)}
 														onPressedChange={e => {
-															const currentOffDays = form.getValues('off_days') || []
+															const currentOffDays =
+																form.getValues('off_days') || []
 															if (e) {
 																form.setValue(
 																	'off_days',
 																	currentOffDays.filter(q => q !== day),
 																)
 															} else {
-																form.setValue('off_days', [...currentOffDays, day])
+																form.setValue('off_days', [
+																	...currentOffDays,
+																	day,
+																])
 															}
 														}}
 													>
@@ -243,7 +307,10 @@ export function ShiftDialog({
 													<FormControl>
 														<Popover>
 															<PopoverTrigger asChild>
-																<Button variant='outline' className='w-full justify-between font-normal'>
+																<Button
+																	variant='outline'
+																	className='w-full justify-between font-normal'
+																>
 																	{field.value.toLocaleDateString()}
 																</Button>
 															</PopoverTrigger>
@@ -277,7 +344,12 @@ export function ShiftDialog({
 														</Button>
 													</PopoverTrigger>
 													<PopoverContent>
-														<Calendar mode='single' onSelect={val => val && form.setValue('start_date', val)} />
+														<Calendar
+															mode='single'
+															onSelect={val =>
+																val && form.setValue('start_date', val)
+															}
+														/>
 													</PopoverContent>
 												</Popover>
 											</Field>
@@ -290,20 +362,30 @@ export function ShiftDialog({
 														</Button>
 													</PopoverTrigger>
 													<PopoverContent>
-														<Calendar mode='single' onSelect={val => form.setValue('end_date', val)} />
+														<Calendar
+															mode='single'
+															onSelect={val => form.setValue('end_date', val)}
+														/>
 													</PopoverContent>
 												</Popover>
 											</Field>
 											<Popover>
 												<PopoverTrigger asChild>
-													<Button variant='outline' size='icon-lg' className='place-self-end'>
+													<Button
+														variant='outline'
+														size='icon-lg'
+														className='place-self-end'
+													>
 														<PenIcon className='size-4' />
 													</Button>
 												</PopoverTrigger>
 												<PopoverContent className='w-full'>
 													<Calendar
 														mode='range'
-														selected={{ from: form.watch('start_date'), to: form.watch('end_date') ?? undefined }}
+														selected={{
+															from: form.watch('start_date'),
+															to: form.watch('end_date') ?? undefined,
+														}}
 														onSelect={val => {
 															if (val && val.from && val.to) {
 																form.setValue('start_date', val.from)
@@ -328,18 +410,27 @@ export function ShiftDialog({
 										control={form.control}
 										name='start_time'
 										render={({ field }) => {
-											const parseTimeValue = (timeStr: string | undefined): TimeValue | null => {
+											const parseTimeValue = (
+												timeStr: string | undefined,
+											): TimeValue | null => {
 												if (!timeStr) return null
-												const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
-												if (!match || !match[1] || !match[2] || !match[3]) return null
+												const match = timeStr.match(
+													/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i,
+												)
+												if (!match || !match[1] || !match[2] || !match[3])
+													return null
 												return {
-													hour: parseInt(match[1], 10).toString().padStart(2, '0'),
+													hour: parseInt(match[1], 10)
+														.toString()
+														.padStart(2, '0'),
 													minute: match[2],
 													period: match[3].toUpperCase() as 'AM' | 'PM',
 												}
 											}
 
-											const formatTimeString = (time: TimeValue | null): string => {
+											const formatTimeString = (
+												time: TimeValue | null,
+											): string => {
 												if (!time) return ''
 												return `${time.hour}:${time.minute} ${time.period}`
 											}
@@ -365,18 +456,27 @@ export function ShiftDialog({
 										control={form.control}
 										name='end_time'
 										render={({ field }) => {
-											const parseTimeValue = (timeStr: string | undefined): TimeValue | null => {
+											const parseTimeValue = (
+												timeStr: string | undefined,
+											): TimeValue | null => {
 												if (!timeStr) return null
-												const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
-												if (!match || !match[1] || !match[2] || !match[3]) return null
+												const match = timeStr.match(
+													/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i,
+												)
+												if (!match || !match[1] || !match[2] || !match[3])
+													return null
 												return {
-													hour: parseInt(match[1], 10).toString().padStart(2, '0'),
+													hour: parseInt(match[1], 10)
+														.toString()
+														.padStart(2, '0'),
 													minute: match[2],
 													period: match[3].toUpperCase() as 'AM' | 'PM',
 												}
 											}
 
-											const formatTimeString = (time: TimeValue | null): string => {
+											const formatTimeString = (
+												time: TimeValue | null,
+											): string => {
 												if (!time) return ''
 												return `${time.hour}:${time.minute} ${time.period}`
 											}
@@ -404,7 +504,9 @@ export function ShiftDialog({
 						<Step>
 							<FieldSet>
 								<FieldLegend>Select Pay rates</FieldLegend>
-								<FieldDescription>select pay-rates and other things for shift.</FieldDescription>
+								<FieldDescription>
+									select pay-rates and other things for shift.
+								</FieldDescription>
 								<FieldGroup>
 									<FormField
 										control={form.control}
@@ -429,7 +531,9 @@ export function ShiftDialog({
 																	field.onChange(value === '' ? '' : value)
 																}}
 															/>
-															<InputGroupAddon align='inline-end'>/ hr</InputGroupAddon>
+															<InputGroupAddon align='inline-end'>
+																/ hr
+															</InputGroupAddon>
 														</InputGroup>
 													</FormControl>
 												</Field>
@@ -457,7 +561,9 @@ export function ShiftDialog({
 																	field.onChange(value === '' ? null : value)
 																}}
 															/>
-															<InputGroupAddon align='inline-end'>x</InputGroupAddon>
+															<InputGroupAddon align='inline-end'>
+																x
+															</InputGroupAddon>
 														</InputGroup>
 													</FormControl>
 												</Field>
@@ -471,7 +577,9 @@ export function ShiftDialog({
 						<Step>
 							<FieldSet>
 								<FieldLegend>Notes</FieldLegend>
-								<FieldDescription>Provide notes for employees to follow</FieldDescription>
+								<FieldDescription>
+									Provide notes for employees to follow
+								</FieldDescription>
 								<FieldGroup>
 									<FormField
 										control={form.control}

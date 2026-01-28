@@ -1,37 +1,71 @@
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-	type SiteInsertSchemaWithAddress,
-	siteInsertSchemaWithAddress,
-	SitePicturesSelectSchema,
-} from '@/services/site.schema'
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { FieldSet, FieldDescription, FieldLegend, FieldTitle } from '@/components/ui/field'
-import { Textarea } from '@/components/ui/textarea'
-import { useMutation, useSuspenseQuery, useQueryClient, useQuery } from '@tanstack/react-query'
+	useMutation,
+	useQuery,
+	useQueryClient,
+	useSuspenseQuery,
+} from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { siteQueries, companyQueries } from '@/services/queries'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { updateSite, uploadSitePictures, addSitePictures, deleteSitePicture } from '@/services/site.api'
-import { DashboardTitle } from '@/components/dashboard/dashboard-title'
-import { Spinner } from '@/components/ui/spinner'
-import { useState, useRef, useEffect } from 'react'
-import { Trash2, Loader2, EyeIcon, ImageOff } from 'lucide-react'
+import { EyeIcon, ImageOff, Loader2, Trash2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { DashboardTitle } from '@/components/dashboard/dashboard-title'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import {
 	Carousel,
+	type CarouselApi,
 	CarouselContent,
 	CarouselItem,
 	CarouselNext,
 	CarouselPrevious,
-	type CarouselApi,
 } from '@/components/ui/carousel'
-import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import {
+	Empty,
+	EmptyContent,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from '@/components/ui/empty'
+import {
+	FieldDescription,
+	FieldLegend,
+	FieldSet,
+	FieldTitle,
+} from '@/components/ui/field'
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from '@/components/ui/spinner'
+import { Textarea } from '@/components/ui/textarea'
+import { companyQueries, siteQueries } from '@/services/queries'
+import {
+	addSitePictures,
+	deleteSitePicture,
+	updateSite,
+	uploadSitePictures,
+} from '@/services/site.api'
+import {
+	type SiteInsertSchemaWithAddress,
+	type SitePicturesSelectSchema,
+	siteInsertSchemaWithAddress,
+} from '@/services/site.schema'
 
 export const Route = createFileRoute('/dashboard/sites/edit/$siteId')({
 	component: RouteComponent,
@@ -148,26 +182,30 @@ function RouteComponent() {
 			const fileData = await Promise.all(
 				files.map(
 					file =>
-						new Promise<{ name: string; type: string; data: string }>((resolve, reject) => {
-							const reader = new FileReader()
-							reader.onload = () => {
-								const result = reader.result as string
-								// Remove data URL prefix if present
-								const parts = result.split(',')
-								const base64 = parts.length > 1 ? parts[1]! : result
-								resolve({
-									name: file.name,
-									type: file.type || 'image/jpeg',
-									data: base64,
-								})
-							}
-							reader.onerror = reject
-							reader.readAsDataURL(file)
-						}),
+						new Promise<{ name: string; type: string; data: string }>(
+							(resolve, reject) => {
+								const reader = new FileReader()
+								reader.onload = () => {
+									const result = reader.result as string
+									// Remove data URL prefix if present
+									const parts = result.split(',')
+									const base64 = parts.length > 1 ? parts[1]! : result
+									resolve({
+										name: file.name,
+										type: file.type || 'image/jpeg',
+										data: base64,
+									})
+								}
+								reader.onerror = reject
+								reader.readAsDataURL(file)
+							},
+						),
 				),
 			)
 
-			const uploadedPictures = await uploadPicturesMutation.mutateAsync({ data: fileData })
+			const uploadedPictures = await uploadPicturesMutation.mutateAsync({
+				data: fileData,
+			})
 			await addSitePicturesMutation.mutateAsync({
 				data: uploadedPictures.map(pic => ({
 					siteId,
@@ -196,9 +234,16 @@ function RouteComponent() {
 				<div className='flex items-start justify-between'>
 					<div className='space-y-1'>
 						<FieldTitle>Site Pictures</FieldTitle>
-						<FieldDescription>Manage pictures for this site. Hover over images to delete them.</FieldDescription>
+						<FieldDescription>
+							Manage pictures for this site. Hover over images to delete them.
+						</FieldDescription>
 					</div>
-					<Button type='button' variant='ghost' onClick={handleAddPicturesClick} disabled={isUploading}>
+					<Button
+						type='button'
+						variant='ghost'
+						onClick={handleAddPicturesClick}
+						disabled={isUploading}
+					>
 						{isUploading ? (
 							<span className='flex gap-2 items-center'>
 								<Spinner />
@@ -224,7 +269,11 @@ function RouteComponent() {
 						{site.pictures
 							.filter(p => p.url)
 							.map((picture, index) => (
-								<RenderPicture key={picture.id} onView={() => openImageViewer(index)} picture={picture} />
+								<RenderPicture
+									key={picture.id}
+									onView={() => openImageViewer(index)}
+									picture={picture}
+								/>
 							))}
 					</div>
 				)}
@@ -258,7 +307,10 @@ function RouteComponent() {
 								<FormItem className='w-full'>
 									<FormLabel>Company</FormLabel>
 									<FormControl>
-										<Select value={field.value} onValueChange={e => field.onChange(e)}>
+										<Select
+											value={field.value}
+											onValueChange={e => field.onChange(e)}
+										>
 											<SelectTrigger className='w-full'>
 												<SelectValue placeholder='select company' />
 											</SelectTrigger>
@@ -305,7 +357,9 @@ function RouteComponent() {
 
 					<FieldSet>
 						<FieldLegend>Contact Information</FieldLegend>
-						<FieldDescription>Provide site contact person details.</FieldDescription>
+						<FieldDescription>
+							Provide site contact person details.
+						</FieldDescription>
 						<FormField
 							control={form.control}
 							name='contactPerson'
@@ -326,7 +380,11 @@ function RouteComponent() {
 								<FormItem>
 									<FormLabel>Contact Email (optional)</FormLabel>
 									<FormControl>
-										<Input type='email' {...field} value={field.value ?? undefined} />
+										<Input
+											type='email'
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -357,7 +415,11 @@ function RouteComponent() {
 								<FormItem>
 									<FormLabel>Address line 1</FormLabel>
 									<FormControl>
-										<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+										<Textarea
+											className='resize-none'
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -370,7 +432,11 @@ function RouteComponent() {
 								<FormItem>
 									<FormLabel>Address line 2 (optional)</FormLabel>
 									<FormControl>
-										<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+										<Textarea
+											className='resize-none'
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -380,7 +446,9 @@ function RouteComponent() {
 
 					<FieldSet>
 						<FieldLegend>Site Location</FieldLegend>
-						<FieldDescription>Provide site location, state, city and postal code</FieldDescription>
+						<FieldDescription>
+							Provide site location, state, city and postal code
+						</FieldDescription>
 						<div className='flex justify-between items-center gap-2'>
 							<FormField
 								control={form.control}
@@ -440,11 +508,20 @@ function RouteComponent() {
 					</FieldSet>
 
 					<div className='flex justify-end gap-2'>
-						<Button type='button' variant='outline' onClick={() => router.navigate({ to: '/dashboard/sites' })}>
+						<Button
+							type='button'
+							variant='outline'
+							onClick={() => router.navigate({ to: '/dashboard/sites' })}
+						>
 							Cancel
 						</Button>
-						<Button type='submit' disabled={updateSiteMutation.isPending || isUploading}>
-							{updateSiteMutation.isPending || isUploading ? 'Saving...' : 'Save Changes'}
+						<Button
+							type='submit'
+							disabled={updateSiteMutation.isPending || isUploading}
+						>
+							{updateSiteMutation.isPending || isUploading
+								? 'Saving...'
+								: 'Save Changes'}
 						</Button>
 					</div>
 				</form>
@@ -452,7 +529,10 @@ function RouteComponent() {
 
 			{/* Image Viewer Dialog */}
 			<Dialog open={viewerOpen} onOpenChange={setViewerOpen}>
-				<DialogContent showCloseButton={true} className='min-w-[75vw] max-w-[85vw]'>
+				<DialogContent
+					showCloseButton={true}
+					className='min-w-[75vw] max-w-[85vw]'
+				>
 					<Carousel
 						className='mx-10 min-w-xs'
 						setApi={setCarouselApi}
@@ -491,7 +571,13 @@ function RouteComponent() {
 	)
 }
 
-function RenderPicture({ onView, picture }: { onView?: () => void; picture: SitePicturesSelectSchema }) {
+function RenderPicture({
+	onView,
+	picture,
+}: {
+	onView?: () => void
+	picture: SitePicturesSelectSchema
+}) {
 	const queryClient = useQueryClient()
 	const deletePictureMutation = useMutation({
 		mutationFn: deleteSitePicture,
@@ -505,7 +591,7 @@ function RenderPicture({ onView, picture }: { onView?: () => void; picture: Site
 	})
 
 	return (
-		<div className='group relative flex-shrink-0 aspect-square w-32 h-32 rounded-lg overflow-hidden border bg-muted'>
+		<div className='group relative shrink-0 aspect-square w-32 h-32 rounded-lg overflow-hidden border bg-muted'>
 			<Avatar className='w-full h-full object-cover rounded-md'>
 				<AvatarImage src={picture.url!} alt='Site picture' />
 				<AvatarFallback className='rounded-md relative'>
@@ -526,7 +612,9 @@ function RenderPicture({ onView, picture }: { onView?: () => void; picture: Site
 					variant='destructive'
 					size='icon'
 					className='hidden opacity-0 group-hover:inline-flex group-hover:opacity-100 transition-opacity duration-200 h-8 w-8'
-					onClick={() => deletePictureMutation.mutate({ data: { id: picture.id } })}
+					onClick={() =>
+						deletePictureMutation.mutate({ data: { id: picture.id } })
+					}
 					disabled={deletePictureMutation.isPending}
 				>
 					{deletePictureMutation.isPending ? (

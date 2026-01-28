@@ -4,7 +4,7 @@ import { shiftQueries } from '@/services/queries'
 import { getDay, isBefore, isSameDay, isWithinInterval } from 'date-fns'
 import { formatTime } from '@/lib/utils'
 import { Clock, ClockPlusIcon } from 'lucide-react'
-import { Day, shiftDays } from '@/constants'
+import { type Day, shiftDays } from '@/constants'
 import { ShiftPreview } from '@/components/dashboard/schedules/shift-preview'
 import {
 	Calendar,
@@ -14,8 +14,15 @@ import {
 	CalendarModel,
 } from '@/components/ui/event-calendar'
 import { cn } from '@/lib/utils'
-import { QueryData } from '@/lib/types'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import type { QueryData } from '@/lib/types'
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from '@/components/ui/empty'
 import { Button } from '@/components/ui/button'
 import { useAppState } from '@/context/app-context'
 
@@ -77,7 +84,10 @@ export function RouteComponent() {
 					<EmptyDescription>No Schedules are created yet.</EmptyDescription>
 				</EmptyHeader>
 				<EmptyContent>
-					<Button className='flex gap-2' onClick={() => dialogs.open('add-shift')}>
+					<Button
+						className='flex gap-2'
+						onClick={() => dialogs.open('add-shift')}
+					>
 						<ClockPlusIcon className='size-3' /> Add Shift
 					</Button>
 				</EmptyContent>
@@ -96,19 +106,24 @@ export function RouteComponent() {
 					getEventsForDay={getCurrentShifts}
 					renderWeeklyEventRow={(shift, weekDays, selectedDate) => {
 						return (
-							<div key={shift.id} className='grid grid-cols-7 min-w-[1000px] w-full lg:min-w-0 lg:w-full'>
+							<div
+								key={shift.id}
+								className='grid grid-cols-7 min-w-[1000px] w-full lg:min-w-0 lg:w-full'
+							>
 								{weekDays.map(day => {
 									const renderDay = () => {
-										const excludedDay = shift.shiftExcludeDay.find(excludeDay => {
-											if (excludeDay.to) {
-												return isWithinInterval(day, {
-													start: excludeDay.from,
-													end: excludeDay.to,
-												})
-											} else {
-												return isSameDay(day, excludeDay.from)
-											}
-										})
+										const excludedDay = shift.shiftExcludeDay.find(
+											excludeDay => {
+												if (excludeDay.to) {
+													return isWithinInterval(day, {
+														start: excludeDay.from,
+														end: excludeDay.to,
+													})
+												} else {
+													return isSameDay(day, excludeDay.from)
+												}
+											},
+										)
 										if (excludedDay) {
 											return (
 												<div className='bg-muted/30 h-full text-green bg-[repeating-linear-gradient(145deg,transparent,transparent_10px,var(--border),var(--border)_12px)] flex items-center justify-center text-muted-foreground/60'>
@@ -117,7 +132,9 @@ export function RouteComponent() {
 											)
 										}
 										const todaysDay = getDay(day)
-										const isOffDay = shift.off_days.includes(shiftDays[todaysDay] as Day)
+										const isOffDay = shift.off_days.includes(
+											shiftDays[todaysDay] as Day,
+										)
 										const checkShiftValidation = () => {
 											if (shift.type === 'one_time' && shift.end_date) {
 												return isWithinInterval(day, {
@@ -129,7 +146,11 @@ export function RouteComponent() {
 										}
 										const isValid = checkShiftValidation()
 										if (!isValid) {
-											return <div className='flex justify-center items-center h-full font-normal'>-</div>
+											return (
+												<div className='flex justify-center items-center h-full font-normal'>
+													-
+												</div>
+											)
 										}
 										if (isValid && isOffDay) {
 											return (
@@ -144,7 +165,8 @@ export function RouteComponent() {
 													<div className='flex items-center gap-2'>
 														<Clock className='size-4 md:size-5 lg:size-4 xl:size-4 text-primary shrink-0' />
 														<span className='font-semibold'>
-															{formatTime(shift.start_time)} - {formatTime(shift.end_time)}
+															{formatTime(shift.start_time)} -{' '}
+															{formatTime(shift.end_time)}
 														</span>
 													</div>
 												</div>
@@ -156,7 +178,8 @@ export function RouteComponent() {
 											key={day.toISOString()}
 											className={cn(
 												'min-h-[140px] md:min-h-[160px] lg:min-h-[120px] xl:min-h-[140px] p-0 border-r last:border-r-0',
-												isSameDay(selectedDate, day) && 'border-primary border-l border-r bg-primary/5',
+												isSameDay(selectedDate, day) &&
+													'border-primary border-l border-r bg-primary/5',
 											)}
 										>
 											{renderDay()}
@@ -181,7 +204,8 @@ export function RouteComponent() {
 								>
 									<Clock className='size-3 hidden lg:inline-block' />
 									<p className='space-x-1 hidden md:flex items-center'>
-										<p>{formatTime(shift.start_time)}</p> <p>-</p> <p>{formatTime(shift.end_time)}</p>
+										<p>{formatTime(shift.start_time)}</p> <p>-</p>{' '}
+										<p>{formatTime(shift.end_time)}</p>
 									</p>
 								</div>
 							</ShiftPreview>

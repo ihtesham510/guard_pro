@@ -1,4 +1,9 @@
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import {
+	Empty,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from '@/components/ui/empty'
 import { createFileRoute } from '@tanstack/react-router'
 import { OctagonX } from 'lucide-react'
 

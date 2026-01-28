@@ -1,7 +1,7 @@
-import React from 'react'
+import type React from 'react'
+import { NavMain, type NavMainProps } from '@/components/sidebar/nav-main'
+import { NavUser } from '@/components/sidebar/nav-user'
 import { Sidebar, SidebarContent, SidebarHeader } from '@/components/ui/sidebar'
-import { NavUser } from './nav-user'
-import { NavMain, NavMainProps } from './nav-main'
 import { useRoutes } from '@/hooks/use-routes'
 
 interface SideBarProps extends React.ComponentProps<typeof Sidebar> {

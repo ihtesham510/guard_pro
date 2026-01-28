@@ -1,12 +1,17 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
-import { endOfMonth, format, startOfMonth, isSameDay } from 'date-fns'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import React, { useEffect, useState } from 'react'
-import { ButtonGroup } from '@/components/ui/button-group'
 import { useScrollIntoView } from '@mantine/hooks'
+import { endOfMonth, format, isSameDay, startOfMonth } from 'date-fns'
+import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
+import type React from 'react'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from '@/components/ui/hover-card'
+import { cn } from '@/lib/utils'
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -41,7 +46,7 @@ export function EventsCalendar<T>({
 		if (onDateChange) {
 			onDateChange(currentDate)
 		}
-	}, [currentDate])
+	}, [currentDate, onDateChange])
 
 	const { targetRef, scrollIntoView } = useScrollIntoView({
 		offset: 20,
@@ -52,9 +57,11 @@ export function EventsCalendar<T>({
 		return isSameDay(date, compareDate)
 	}
 
-	const handlePrevMonth = () => setDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
+	const handlePrevMonth = () =>
+		setDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
 
-	const handleNextMonth = () => setDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
+	const handleNextMonth = () =>
+		setDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
 
 	const goToToday = () => {
 		setDate(new Date(Date.now()))
@@ -79,7 +86,10 @@ export function EventsCalendar<T>({
 
 						<span>
 							<h2 className='text-2xl font-bold'>
-								{currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+								{currentDate.toLocaleString('default', {
+									month: 'long',
+									year: 'numeric',
+								})}
 							</h2>
 							<p className='text-sm font-medium text-muted-foreground'>{`${format(startOfMonth(currentDate), 'MMM dd')} - ${format(endOfMonth(currentDate), 'MMM dd, yyy')}`}</p>
 						</span>
@@ -87,14 +97,29 @@ export function EventsCalendar<T>({
 
 					<div className='flex items-center space-x-1'>
 						<ButtonGroup>
-							<Button onClick={handlePrevMonth} variant='outline' size='icon' className='h-8 w-8'>
+							<Button
+								onClick={handlePrevMonth}
+								variant='outline'
+								size='icon'
+								className='h-8 w-8'
+							>
 								<ChevronLeft className='h-4 w-4' />
 							</Button>
-							<Button onClick={goToToday} variant='outline' size='sm' className='flex items-center gap-1'>
+							<Button
+								onClick={goToToday}
+								variant='outline'
+								size='sm'
+								className='flex items-center gap-1'
+							>
 								<Calendar className='h-4 w-4 mr-1' />
 								Today
 							</Button>
-							<Button onClick={handleNextMonth} variant='outline' size='icon' className='h-8 w-8'>
+							<Button
+								onClick={handleNextMonth}
+								variant='outline'
+								size='icon'
+								className='h-8 w-8'
+							>
 								<ChevronRight className='h-4 w-4' />
 							</Button>
 						</ButtonGroup>
@@ -103,7 +128,10 @@ export function EventsCalendar<T>({
 
 				<div className='grid grid-cols-7 gap-1'>
 					{DAYS.map(day => (
-						<div key={day} className='text-center font-medium text-muted-foreground text-sm py-2'>
+						<div
+							key={day}
+							className='text-center font-medium text-muted-foreground text-sm py-2'
+						>
 							{day}
 						</div>
 					))}
@@ -147,18 +175,19 @@ export function EventsCalendar<T>({
 									</span>
 
 									<div className='grid space-y-1'>
-										{currentDateEvents.length > 0 && (
-											<React.Fragment>
-												{currentDateEvents.map((event, eventIndex) => (
-													<HoverCard key={eventIndex}>
-														<HoverCardTrigger asChild>
-															<div>{eventBadge && eventBadge(event)}</div>
-														</HoverCardTrigger>
-														{eventHover && <HoverCardContent>{eventHover(event)}</HoverCardContent>}
-													</HoverCard>
-												))}
-											</React.Fragment>
-										)}
+										{currentDateEvents.length > 0 &&
+											currentDateEvents.map((event, eventIndex) => (
+												<HoverCard key={eventIndex}>
+													<HoverCardTrigger asChild>
+														<div>{eventBadge && eventBadge(event)}</div>
+													</HoverCardTrigger>
+													{eventHover && (
+														<HoverCardContent>
+															{eventHover(event)}
+														</HoverCardContent>
+													)}
+												</HoverCard>
+											))}
 									</div>
 								</div>
 							)
@@ -185,7 +214,11 @@ const generateCalendar = (currentDate: Date): CalendarCell[][] => {
 		const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate()
 		for (let i = 0; i < firstDayOfMonth; i++) {
 			week.push({
-				date: new Date(prevYear, prevMonth, daysInPrevMonth - firstDayOfMonth + 1 + i),
+				date: new Date(
+					prevYear,
+					prevMonth,
+					daysInPrevMonth - firstDayOfMonth + 1 + i,
+				),
 				isCurrentMonth: false,
 			})
 		}
@@ -204,7 +237,10 @@ const generateCalendar = (currentDate: Date): CalendarCell[][] => {
 		const nextYear = month === 11 ? year + 1 : year
 		let d = 1
 		while (week.length < 7) {
-			week.push({ date: new Date(nextYear, nextMonth, d++), isCurrentMonth: false })
+			week.push({
+				date: new Date(nextYear, nextMonth, d++),
+				isCurrentMonth: false,
+			})
 		}
 		weeks.push(week)
 	}

@@ -1,50 +1,79 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { employeInsertSchemaWithAddress } from '@/services/employee.schema'
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from '@/components/ui/form'
+import {
+	FormField,
+	FormItem,
+	FormLabel,
+	FormControl,
+	FormMessage,
+	Form,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { FieldSet, FieldDescription, FieldLegend } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import { useMutation, useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
+import {
+	useMutation,
+	useSuspenseQuery,
+	useQueryClient,
+} from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { employeeQuries } from '@/services/queries'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { updateEmployee } from '@/services/employee.api'
 import { PhoneInput } from '@/components/ui/phone-input'
 import { enums } from '@/db/schema'
 import { capitalizeFirstLetter, generateEmployeeCode } from '@/lib/utils'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@/components/ui/input-group'
 import { WandSparkles } from 'lucide-react'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { DashboardTitle } from '@/components/dashboard/dashboard-title'
 import { Spinner } from '@/components/ui/spinner'
-import z from 'zod'
+import type z from 'zod'
 
-const schema = employeInsertSchemaWithAddress.superRefine(({ employeeCode }, ctx) => {
-	const symbol_regex = /[^a-zA-Z0-9]/
-	const hasAppropiatelenght = employeeCode && employeeCode.length === 8
-	const hasAnySymbols = !!(employeeCode && symbol_regex.test(employeeCode))
-	if (!hasAppropiatelenght) {
-		ctx.addIssue({
-			code: 'custom',
-			message: 'Code must of under 8 characters',
-			path: ['employeeCode'],
-		})
-	}
-	if (hasAnySymbols) {
-		ctx.addIssue({
-			code: 'custom',
-			message: 'Code must not contain any symbols',
-			path: ['employeeCode'],
-		})
-	}
-})
+const schema = employeInsertSchemaWithAddress.superRefine(
+	({ employeeCode }, ctx) => {
+		const symbol_regex = /[^a-zA-Z0-9]/
+		const hasAppropiatelenght = employeeCode && employeeCode.length === 8
+		const hasAnySymbols = !!(employeeCode && symbol_regex.test(employeeCode))
+		if (!hasAppropiatelenght) {
+			ctx.addIssue({
+				code: 'custom',
+				message: 'Code must of under 8 characters',
+				path: ['employeeCode'],
+			})
+		}
+		if (hasAnySymbols) {
+			ctx.addIssue({
+				code: 'custom',
+				message: 'Code must not contain any symbols',
+				path: ['employeeCode'],
+			})
+		}
+	},
+)
 
 export const Route = createFileRoute('/dashboard/employees/edit/$employeeId')({
 	component: RouteComponent,
 	loader: async ({ context: { queryClient }, params }) => {
-		await queryClient.ensureQueryData(employeeQuries.get_employee_by_id(params.employeeId))
+		await queryClient.ensureQueryData(
+			employeeQuries.get_employee_by_id(params.employeeId),
+		)
 	},
 })
 
@@ -52,7 +81,9 @@ function RouteComponent() {
 	const { employeeId } = Route.useParams()
 	const router = useRouter()
 	const queryClient = useQueryClient()
-	const { data: employee } = useSuspenseQuery(employeeQuries.get_employee_by_id(employeeId))
+	const { data: employee } = useSuspenseQuery(
+		employeeQuries.get_employee_by_id(employeeId),
+	)
 
 	const updateEmployeeMutation = useMutation({
 		mutationFn: updateEmployee,
@@ -92,13 +123,18 @@ function RouteComponent() {
 	const handleSubmit = async (data: z.infer<typeof schema>) => {
 		const cleanedValues = { ...data }
 		if (cleanedValues.address) {
-			const addressFields = ['address_line_1', 'address_line_2', 'state', 'city', 'zip', 'country'] as const
-			const hasAnyAddressField = addressFields.some(
-				field => {
-					const value = cleanedValues.address?.[field]
-					return value !== undefined && value !== null && value !== ''
-				}
-			)
+			const addressFields = [
+				'address_line_1',
+				'address_line_2',
+				'state',
+				'city',
+				'zip',
+				'country',
+			] as const
+			const hasAnyAddressField = addressFields.some(field => {
+				const value = cleanedValues.address?.[field]
+				return value !== undefined && value !== null && value !== ''
+			})
 			if (!hasAnyAddressField) {
 				cleanedValues.address = undefined
 			}
@@ -122,7 +158,9 @@ function RouteComponent() {
 				<form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-6'>
 					<FieldSet>
 						<FieldLegend>Employee Name</FieldLegend>
-						<FieldDescription>Provide employee first and last name.</FieldDescription>
+						<FieldDescription>
+							Provide employee first and last name.
+						</FieldDescription>
 
 						<FormField
 							control={form.control}
@@ -154,7 +192,9 @@ function RouteComponent() {
 
 					<FieldSet>
 						<FieldLegend>Employee's Contact</FieldLegend>
-						<FieldDescription>Provide employee's work or personal phone number and email.</FieldDescription>
+						<FieldDescription>
+							Provide employee's work or personal phone number and email.
+						</FieldDescription>
 						<FormField
 							control={form.control}
 							name='email'
@@ -206,7 +246,11 @@ function RouteComponent() {
 								<FormItem>
 									<FormLabel>Address line 1 (optional)</FormLabel>
 									<FormControl>
-										<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+										<Textarea
+											className='resize-none'
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -219,7 +263,11 @@ function RouteComponent() {
 								<FormItem>
 									<FormLabel>Address line 2 (optional)</FormLabel>
 									<FormControl>
-										<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+										<Textarea
+											className='resize-none'
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -231,7 +279,9 @@ function RouteComponent() {
 						<div className='flex items-center justify-between mb-2'>
 							<div>
 								<FieldLegend>Employee's Location</FieldLegend>
-								<FieldDescription>Provide employee's location, state, city and postal code</FieldDescription>
+								<FieldDescription>
+									Provide employee's location, state, city and postal code
+								</FieldDescription>
 							</div>
 							<Button
 								type='button'
@@ -303,7 +353,9 @@ function RouteComponent() {
 
 					<FieldSet>
 						<FieldLegend>Employee's Identification</FieldLegend>
-						<FieldDescription>Generate or enter employees code and his/her's postions.</FieldDescription>
+						<FieldDescription>
+							Generate or enter employees code and his/her's postions.
+						</FieldDescription>
 						<FormField
 							control={form.control}
 							name='employeeCode'
@@ -312,17 +364,24 @@ function RouteComponent() {
 									<FormLabel>Employee Code</FormLabel>
 									<FormControl>
 										<InputGroup>
-											<InputGroupInput {...field} value={field.value ?? undefined} />
+											<InputGroupInput
+												{...field}
+												value={field.value ?? undefined}
+											/>
 											<InputGroupAddon
 												align='inline-end'
 												className='cursor-pointer'
-												onClick={() => form.setValue('employeeCode', generateEmployeeCode())}
+												onClick={() =>
+													form.setValue('employeeCode', generateEmployeeCode())
+												}
 											>
 												<Tooltip>
 													<TooltipTrigger asChild>
 														<WandSparkles />
 													</TooltipTrigger>
-													<TooltipContent>Generate Employee Code</TooltipContent>
+													<TooltipContent>
+														Generate Employee Code
+													</TooltipContent>
 												</Tooltip>
 											</InputGroupAddon>
 										</InputGroup>
@@ -338,9 +397,15 @@ function RouteComponent() {
 								<FormItem className='w-full'>
 									<FormLabel>Employee Position</FormLabel>
 									<FormControl>
-										<Select value={field.value} onValueChange={e => field.onChange(e)}>
+										<Select
+											value={field.value}
+											onValueChange={e => field.onChange(e)}
+										>
 											<SelectTrigger className='w-full'>
-												<SelectValue className='w-full' placeholder='select position' />
+												<SelectValue
+													className='w-full'
+													placeholder='select position'
+												/>
 											</SelectTrigger>
 											<SelectContent>
 												{enums.employeePositionEnum.map((pos, i) => (
@@ -358,7 +423,11 @@ function RouteComponent() {
 					</FieldSet>
 
 					<div className='flex justify-end gap-2'>
-						<Button type='button' variant='outline' onClick={() => router.navigate({ to: '/dashboard/employees' })}>
+						<Button
+							type='button'
+							variant='outline'
+							onClick={() => router.navigate({ to: '/dashboard/employees' })}
+						>
 							Cancel
 						</Button>
 						<Button type='submit' disabled={updateEmployeeMutation.isPending}>

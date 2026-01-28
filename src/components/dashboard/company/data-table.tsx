@@ -7,7 +7,12 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table'
-import type { ColumnDef, ColumnFiltersState, SortingState, VisibilityState } from '@tanstack/react-table'
+import type {
+	ColumnDef,
+	ColumnFiltersState,
+	SortingState,
+	VisibilityState,
+} from '@tanstack/react-table'
 import { MoreHorizontal, SearchIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -19,9 +24,13 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@/components/ui/input-group'
 import { useRouter } from '@tanstack/react-router'
-import { CompanySelectSchema } from '@/services/company.schema'
+import type { CompanySelectSchema } from '@/services/company.schema'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteCompany } from '@/services/company.api'
 import { companyQueries } from '@/services/queries'
@@ -68,8 +77,11 @@ export function CompanyDataTable({ data }: CompanyDataTableProps) {
 	)
 
 	const [sorting, setSorting] = React.useState<SortingState>([])
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+		[],
+	)
+	const [columnVisibility, setColumnVisibility] =
+		React.useState<VisibilityState>({})
 	const [rowSelection, setRowSelection] = React.useState({})
 
 	const columns = React.useMemo<ColumnDef<Company>[]>(
@@ -81,7 +93,9 @@ export function CompanyDataTable({ data }: CompanyDataTableProps) {
 			{
 				accessorKey: 'email',
 				header: 'Email',
-				cell: ({ row }) => <div className='lowercase'>{row.getValue('email') || '-'}</div>,
+				cell: ({ row }) => (
+					<div className='lowercase'>{row.getValue('email') || '-'}</div>
+				),
 			},
 			{
 				accessorKey: 'phone',
@@ -104,9 +118,17 @@ export function CompanyDataTable({ data }: CompanyDataTableProps) {
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end'>
 								<DropdownMenuLabel>Actions</DropdownMenuLabel>
-								<DropdownMenuItem onClick={() => navigator.clipboard.writeText(company.id)}>Copy id</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => handleEdit(company)}>Edit</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => handleDelete(company)}>Delete</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={() => navigator.clipboard.writeText(company.id)}
+								>
+									Copy id
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => handleEdit(company)}>
+									Edit
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => handleDelete(company)}>
+									Delete
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					)
@@ -142,7 +164,9 @@ export function CompanyDataTable({ data }: CompanyDataTableProps) {
 					<InputGroupInput
 						placeholder='Filter by name...'
 						value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-						onChange={event => table.getColumn('name')?.setFilterValue(event.target.value)}
+						onChange={event =>
+							table.getColumn('name')?.setFilterValue(event.target.value)
+						}
 					/>
 					<InputGroupAddon align='inline-start'>
 						<SearchIcon />
@@ -154,9 +178,14 @@ export function CompanyDataTable({ data }: CompanyDataTableProps) {
 				<TableBody>
 					{table.getRowModel().rows?.length ? (
 						table.getRowModel().rows.map(row => (
-							<TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+							<TableRow
+								key={row.id}
+								data-state={row.getIsSelected() && 'selected'}
+							>
 								{row.getVisibleCells().map(cell => (
-									<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+									<TableCell key={cell.id}>
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</TableCell>
 								))}
 							</TableRow>
 						))

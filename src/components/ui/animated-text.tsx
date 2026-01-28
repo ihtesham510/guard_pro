@@ -88,7 +88,12 @@ export function AnimatedText({
 	}
 
 	return (
-		<motion.div className={className} variants={containerVariants} initial='hidden' animate='visible'>
+		<motion.div
+			className={className}
+			variants={containerVariants}
+			initial='hidden'
+			animate='visible'
+		>
 			{animationType === 'letters' ? renderLetters() : renderWords()}
 		</motion.div>
 	)

@@ -1,5 +1,14 @@
-import { pgTable, text, timestamp, boolean, pgEnum, index, uuid, numeric } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
+import {
+	boolean,
+	index,
+	numeric,
+	pgEnum,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+} from 'drizzle-orm/pg-core'
 
 ////////////////
 // Enums
@@ -8,14 +17,36 @@ import { relations } from 'drizzle-orm'
 export const enums = {
 	employeeStatusEnum: ['active', 'inactive', 'terminated'] as const,
 	employeePositionEnum: ['employee', 'senior', 'supervisor'] as const,
-	assignmentRequestStatusEnum: ['pending', 'accepted', 'rejected', 'cancelled'] as const,
-	shiftDaysEnum: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'firday', 'saturday'] as const,
+	assignmentRequestStatusEnum: [
+		'pending',
+		'accepted',
+		'rejected',
+		'cancelled',
+	] as const,
+	shiftDaysEnum: [
+		'sunday',
+		'monday',
+		'tuesday',
+		'wednesday',
+		'thursday',
+		'firday',
+		'saturday',
+	] as const,
 	shiftType: ['recurring', 'one_time'] as const,
 }
 
-export const employeeStatusEnum = pgEnum('employee_status', enums.employeeStatusEnum)
-export const employeePositionEnum = pgEnum('employee_position', enums.employeePositionEnum)
-export const shiftAssignmentRequestEnum = pgEnum('assignment_status', enums.assignmentRequestStatusEnum)
+export const employeeStatusEnum = pgEnum(
+	'employee_status',
+	enums.employeeStatusEnum,
+)
+export const employeePositionEnum = pgEnum(
+	'employee_position',
+	enums.employeePositionEnum,
+)
+export const shiftAssignmentRequestEnum = pgEnum(
+	'assignment_status',
+	enums.assignmentRequestStatusEnum,
+)
 export const shiftDaysEnum = pgEnum('shift_days', enums.shiftDaysEnum)
 export const shiftTypeEnum = pgEnum('shift_type', enums.shiftType)
 
@@ -96,7 +127,9 @@ export const company = pgTable(
 			.references(() => user.id, { onDelete: 'cascade' }),
 		name: text('name').notNull(),
 		email: text('email').notNull(),
-		address: uuid('address_id').references(() => address.id, { onDelete: 'cascade' }),
+		address: uuid('address_id').references(() => address.id, {
+			onDelete: 'cascade',
+		}),
 		phone: text('phone'),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 		updatedAt: timestamp('updated_at')
@@ -104,7 +137,10 @@ export const company = pgTable(
 			.$onUpdate(() => new Date())
 			.notNull(),
 	},
-	table => [index('company_user_id_idx').on(table.userId), index('company_name_idx').on(table.name)],
+	table => [
+		index('company_user_id_idx').on(table.userId),
+		index('company_name_idx').on(table.name),
+	],
 )
 
 export const site = pgTable(
@@ -131,7 +167,10 @@ export const site = pgTable(
 			.$onUpdate(() => new Date())
 			.notNull(),
 	},
-	table => [index('site_company_id_idx').on(table.companyId), index('site_client_name_idx').on(table.clientName)],
+	table => [
+		index('site_company_id_idx').on(table.companyId),
+		index('site_client_name_idx').on(table.clientName),
+	],
 )
 
 export const sitePictures = pgTable('site_pictrues', {
@@ -158,7 +197,9 @@ export const employee = pgTable(
 		lastName: text('last_name').notNull(),
 		email: text('email').unique().notNull(),
 		phone: text('phone').notNull(),
-		address: uuid('address_id').references(() => address.id, { onDelete: 'cascade' }),
+		address: uuid('address_id').references(() => address.id, {
+			onDelete: 'cascade',
+		}),
 		position: employeePositionEnum('position').default('employee').notNull(),
 		password: text('password'),
 		hireDate: timestamp('hire_date').defaultNow().notNull(),
@@ -169,7 +210,10 @@ export const employee = pgTable(
 			.$onUpdate(() => new Date())
 			.notNull(),
 	},
-	table => [index('employee_status_idx').on(table.status), index('employee_code_idx').on(table.employeeCode)],
+	table => [
+		index('employee_status_idx').on(table.status),
+		index('employee_code_idx').on(table.employeeCode),
+	],
 )
 
 export const address = pgTable('address', {
@@ -411,46 +455,61 @@ export const timeEntryRelations = relations(timeEntry, ({ one }) => ({
 }))
 
 // shift_assignment relations
-export const shiftAssignementRelations = relations(shift_assignment, ({ one }) => ({
-	shift: one(shift, {
-		fields: [shift_assignment.shift_id],
-		references: [shift.id],
+export const shiftAssignementRelations = relations(
+	shift_assignment,
+	({ one }) => ({
+		shift: one(shift, {
+			fields: [shift_assignment.shift_id],
+			references: [shift.id],
+		}),
+		employee: one(employee, {
+			fields: [shift_assignment.employee_id],
+			references: [employee.id],
+		}),
 	}),
-	employee: one(employee, {
-		fields: [shift_assignment.employee_id],
-		references: [employee.id],
-	}),
-}))
+)
 
 // shift_assignment_request relations
-export const shiftRequestRelations = relations(shift_assignment_request, ({ one }) => ({
-	shift: one(shift, {
-		fields: [shift_assignment_request.shift_id],
-		references: [shift.id],
+export const shiftRequestRelations = relations(
+	shift_assignment_request,
+	({ one }) => ({
+		shift: one(shift, {
+			fields: [shift_assignment_request.shift_id],
+			references: [shift.id],
+		}),
+		employee: one(employee, {
+			fields: [shift_assignment_request.employee_id],
+			references: [employee.id],
+		}),
 	}),
-	employee: one(employee, {
-		fields: [shift_assignment_request.employee_id],
-		references: [employee.id],
-	}),
-}))
+)
 
 // shift_exclude_day relations
-export const shiftExcludeDayRelations = relations(shiftExcludeDay, ({ one }) => ({
-	shift: one(shift, {
-		fields: [shiftExcludeDay.shift_id],
-		references: [shift.id],
+export const shiftExcludeDayRelations = relations(
+	shiftExcludeDay,
+	({ one }) => ({
+		shift: one(shift, {
+			fields: [shiftExcludeDay.shift_id],
+			references: [shift.id],
+		}),
 	}),
-}))
+)
 
 // shift_include_day relations
-export const shiftIncludeDayRelations = relations(shiftIncludeDay, ({ one }) => ({
-	shift: one(shift, {
-		fields: [shiftIncludeDay.shift_id],
-		references: [shift.id],
+export const shiftIncludeDayRelations = relations(
+	shiftIncludeDay,
+	({ one }) => ({
+		shift: one(shift, {
+			fields: [shiftIncludeDay.shift_id],
+			references: [shift.id],
+		}),
 	}),
-}))
+)
 
 // leaveRequest relations
 export const leaveRequestRelations = relations(leaveRequest, ({ one }) => ({
-	employee: one(employee, { fields: [leaveRequest.employee_id], references: [employee.id] }),
+	employee: one(employee, {
+		fields: [leaveRequest.employee_id],
+		references: [employee.id],
+	}),
 }))

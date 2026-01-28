@@ -1,8 +1,8 @@
-import { Button } from '@/components/ui/button'
-import { authClient } from '@/lib/auth-client'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import { Button } from '@/components/ui/button'
+import { authClient } from '@/lib/auth-client'
 
 const signInWithGitHub = async () => {
 	const { error } = await authClient.signIn.social({
@@ -58,7 +58,12 @@ export function SocialLogins() {
 				onClick={() => googleSignInMutation.mutate()}
 				disabled={googleSignInMutation.isPending}
 			>
-				<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' className='mr-2 h-4 w-4' aria-hidden>
+				<svg
+					xmlns='http://www.w3.org/2000/svg'
+					viewBox='0 0 48 48'
+					className='mr-2 h-4 w-4'
+					aria-hidden
+				>
 					<path
 						fill='#FFC107'
 						d='M43.611 20.083H42V20H24v8h11.303C33.602 32.441 29.223 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C33.641 6.053 29.04 4 24 4 12.954 4 4 12.954 4 24s8.954 20 20 20 20-8.954 20-20c0-1.341-.138-2.651-.389-3.917z'

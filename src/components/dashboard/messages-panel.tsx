@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Clock, MessageSquare, Pin } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { MessageSquare, Clock, Pin } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const messages = [
 	{
@@ -54,7 +54,10 @@ export function MessagingPanel() {
 			<CardContent>
 				<div className='space-y-3'>
 					{messages.map(message => (
-						<div key={message.id} className={`p-3 rounded-lg border ${message.unread ? 'bg-muted/50' : ''}`}>
+						<div
+							key={message.id}
+							className={`p-3 rounded-lg border ${message.unread ? 'bg-muted/50' : ''}`}
+						>
 							<div className='flex items-start gap-3'>
 								<Avatar className='h-8 w-8'>
 									<AvatarImage
@@ -71,12 +74,20 @@ export function MessagingPanel() {
 								<div className='flex-1 space-y-1'>
 									<div className='flex items-center justify-between'>
 										<div className='flex items-center gap-2'>
-											<span className='text-sm font-medium'>{message.sender}</span>
-											{message.type === 'announcement' && <Pin className='h-3 w-3 text-orange-600' />}
+											<span className='text-sm font-medium'>
+												{message.sender}
+											</span>
+											{message.type === 'announcement' && (
+												<Pin className='h-3 w-3 text-orange-600' />
+											)}
 										</div>
-										{message.unread && <div className='w-2 h-2 rounded-full bg-blue-600' />}
+										{message.unread && (
+											<div className='w-2 h-2 rounded-full bg-blue-600' />
+										)}
 									</div>
-									<p className='text-sm text-muted-foreground line-clamp-2'>{message.message}</p>
+									<p className='text-sm text-muted-foreground line-clamp-2'>
+										{message.message}
+									</p>
 									<div className='flex items-center gap-1 text-xs text-muted-foreground'>
 										<Clock className='h-3 w-3' />
 										{message.time}
@@ -86,7 +97,11 @@ export function MessagingPanel() {
 						</div>
 					))}
 				</div>
-				<Button variant='outline' size='sm' className='w-full mt-4 bg-transparent'>
+				<Button
+					variant='outline'
+					size='sm'
+					className='w-full mt-4 bg-transparent'
+				>
 					View All Messages
 				</Button>
 			</CardContent>

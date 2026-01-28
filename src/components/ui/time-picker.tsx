@@ -1,9 +1,19 @@
-import * as React from 'react'
 import { Clock } from 'lucide-react'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import * as React from 'react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
 export type TimeValue = {
@@ -64,12 +74,22 @@ function formatTimeValue(time: TimeValue | null): string {
 }
 
 // Generate hours (1-12)
-const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'))
+const hours = Array.from({ length: 12 }, (_, i) =>
+	(i + 1).toString().padStart(2, '0'),
+)
 
 // Generate minutes (00-59)
-const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'))
+const minutes = Array.from({ length: 60 }, (_, i) =>
+	i.toString().padStart(2, '0'),
+)
 
-export function TimePicker({ time, onTimeChange, className, disabled, placeholder = 'Select time' }: TimePickerProps) {
+export function TimePicker({
+	time,
+	onTimeChange,
+	className,
+	disabled,
+	placeholder = 'Select time',
+}: TimePickerProps) {
 	const [open, setOpen] = React.useState(false)
 	const [inputValue, setInputValue] = React.useState('')
 
@@ -155,7 +175,11 @@ export function TimePicker({ time, onTimeChange, className, disabled, placeholde
 			<PopoverTrigger asChild>
 				<Button
 					variant='outline'
-					className={cn('w-full justify-start text-left font-normal', !timeValue && 'text-muted-foreground', className)}
+					className={cn(
+						'w-full justify-start text-left font-normal',
+						!timeValue && 'text-muted-foreground',
+						className,
+					)}
 					disabled={disabled}
 				>
 					<Clock className='mr-2 h-4 w-4' />
@@ -166,8 +190,11 @@ export function TimePicker({ time, onTimeChange, className, disabled, placeholde
 				<div className='space-y-4'>
 					{/* Manual Input */}
 					<div className='space-y-2'>
-						<label className='text-sm font-medium'>Enter time manually</label>
+						<label className='text-sm font-medium' htmlFor='time-entry'>
+							Enter time manually
+						</label>
 						<Input
+							id='time-entry'
 							type='text'
 							placeholder='HH:MM AM/PM'
 							value={inputValue}
@@ -175,14 +202,21 @@ export function TimePicker({ time, onTimeChange, className, disabled, placeholde
 							onBlur={handleInputBlur}
 							className='w-full'
 						/>
-						<p className='text-xs text-muted-foreground'>Format: HH:MM AM/PM (e.g., 09:30 AM)</p>
+						<p className='text-xs text-muted-foreground'>
+							Format: HH:MM AM/PM (e.g., 09:30 AM)
+						</p>
 					</div>
 
 					<div className='flex items-center gap-2'>
 						{/* Hour Select */}
 						<div className='space-y-2'>
-							<label className='text-xs text-muted-foreground'>Hour</label>
-							<Select value={timeValue?.hour || '01'} onValueChange={handleHourChange}>
+							<label className='text-xs text-muted-foreground' htmlFor='hour'>
+								Hour
+							</label>
+							<Select
+								value={timeValue?.hour || '01'}
+								onValueChange={handleHourChange}
+							>
 								<SelectTrigger className='w-[80px]'>
 									<SelectValue />
 								</SelectTrigger>
@@ -198,8 +232,13 @@ export function TimePicker({ time, onTimeChange, className, disabled, placeholde
 
 						{/* Minute Select */}
 						<div className='space-y-2'>
-							<label className='text-xs text-muted-foreground'>Minute</label>
-							<Select value={timeValue?.minute || '00'} onValueChange={handleMinuteChange}>
+							<label className='text-xs text-muted-foreground' htmlFor='minute'>
+								Minute
+							</label>
+							<Select
+								value={timeValue?.minute || '00'}
+								onValueChange={handleMinuteChange}
+							>
 								<SelectTrigger className='w-[80px]'>
 									<SelectValue />
 								</SelectTrigger>
@@ -215,8 +254,13 @@ export function TimePicker({ time, onTimeChange, className, disabled, placeholde
 
 						{/* AM/PM Select */}
 						<div className='space-y-2'>
-							<label className='text-xs text-muted-foreground'>Period</label>
-							<Select value={timeValue?.period || 'AM'} onValueChange={handlePeriodChange}>
+							<label className='text-xs text-muted-foreground' htmlFor='period'>
+								Period
+							</label>
+							<Select
+								value={timeValue?.period || 'AM'}
+								onValueChange={handlePeriodChange}
+							>
 								<SelectTrigger className='w-[80px]'>
 									<SelectValue />
 								</SelectTrigger>
@@ -232,4 +276,3 @@ export function TimePicker({ time, onTimeChange, className, disabled, placeholde
 		</Popover>
 	)
 }
-

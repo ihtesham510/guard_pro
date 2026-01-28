@@ -10,9 +10,20 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { CompanySelectSchema } from '@/services/company.schema'
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@/components/ui/input-group'
+import type { CompanySelectSchema } from '@/services/company.schema'
 import { deleteCompany } from '@/services/company.api'
 import { companyQueries } from '@/services/queries'
 import { toast } from 'sonner'
@@ -107,7 +118,9 @@ export function CompanySimpleTable({ data }: CompanySimpleTableProps) {
 
 				<div className='space-y-3'>
 					{filteredData.length === 0 ? (
-						<div className='text-center py-8 text-muted-foreground'>No companies found.</div>
+						<div className='text-center py-8 text-muted-foreground'>
+							No companies found.
+						</div>
 					) : (
 						filteredData.map(company => (
 							<div
@@ -124,24 +137,47 @@ export function CompanySimpleTable({ data }: CompanySimpleTableProps) {
 										</Avatar>
 										<div className='flex-1 min-w-0'>
 											<p className='font-semibold truncate'>{company.name}</p>
-											{company.email && <p className='text-sm text-muted-foreground truncate'>{company.email}</p>}
-											{company.phone && <p className='text-sm text-muted-foreground truncate mt-1'>{company.phone}</p>}
+											{company.email && (
+												<p className='text-sm text-muted-foreground truncate'>
+													{company.email}
+												</p>
+											)}
+											{company.phone && (
+												<p className='text-sm text-muted-foreground truncate mt-1'>
+													{company.phone}
+												</p>
+											)}
 										</div>
 									</div>
 									<DropdownMenu>
-										<DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
-											<Button variant='ghost' size='icon' className='h-8 w-8 shrink-0'>
+										<DropdownMenuTrigger
+											asChild
+											onClick={e => e.stopPropagation()}
+										>
+											<Button
+												variant='ghost'
+												size='icon'
+												className='h-8 w-8 shrink-0'
+											>
 												<span className='sr-only'>Open menu</span>
 												<MoreHorizontal className='h-4 w-4' />
 											</Button>
 										</DropdownMenuTrigger>
 										<DropdownMenuContent align='end'>
 											<DropdownMenuLabel>Actions</DropdownMenuLabel>
-											<DropdownMenuItem onClick={() => navigator.clipboard.writeText(company.id)}>
+											<DropdownMenuItem
+												onClick={() =>
+													navigator.clipboard.writeText(company.id)
+												}
+											>
 												Copy ID
 											</DropdownMenuItem>
-											<DropdownMenuItem onClick={e => handleEdit(company, e)}>Edit</DropdownMenuItem>
-											<DropdownMenuItem onClick={e => handleDelete(company, e)}>Delete</DropdownMenuItem>
+											<DropdownMenuItem onClick={e => handleEdit(company, e)}>
+												Edit
+											</DropdownMenuItem>
+											<DropdownMenuItem onClick={e => handleDelete(company, e)}>
+												Delete
+											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>
 								</div>
@@ -190,9 +226,15 @@ export function CompanySimpleTable({ data }: CompanySimpleTableProps) {
 						</TableRow>
 					) : (
 						filteredData.map(company => (
-							<TableRow key={company.id} onClick={() => handleRowClick(company)} className='cursor-pointer'>
+							<TableRow
+								key={company.id}
+								onClick={() => handleRowClick(company)}
+								className='cursor-pointer'
+							>
 								<TableCell className='font-medium'>{company.name}</TableCell>
-								<TableCell className='lowercase'>{company.email || '-'}</TableCell>
+								<TableCell className='lowercase'>
+									{company.email || '-'}
+								</TableCell>
 								<TableCell>{company.phone || '-'}</TableCell>
 								<TableCell onClick={e => e.stopPropagation()}>
 									<DropdownMenu>
@@ -204,11 +246,19 @@ export function CompanySimpleTable({ data }: CompanySimpleTableProps) {
 										</DropdownMenuTrigger>
 										<DropdownMenuContent align='end'>
 											<DropdownMenuLabel>Actions</DropdownMenuLabel>
-											<DropdownMenuItem onClick={() => navigator.clipboard.writeText(company.id)}>
+											<DropdownMenuItem
+												onClick={() =>
+													navigator.clipboard.writeText(company.id)
+												}
+											>
 												Copy ID
 											</DropdownMenuItem>
-											<DropdownMenuItem onClick={e => handleEdit(company, e)}>Edit</DropdownMenuItem>
-											<DropdownMenuItem onClick={e => handleDelete(company, e)}>Delete</DropdownMenuItem>
+											<DropdownMenuItem onClick={e => handleEdit(company, e)}>
+												Edit
+											</DropdownMenuItem>
+											<DropdownMenuItem onClick={e => handleDelete(company, e)}>
+												Delete
+											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>
 								</TableCell>

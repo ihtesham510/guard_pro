@@ -10,7 +10,10 @@ type State<Dialog extends string> = {
 	[key in Dialog]: boolean
 }
 
-function reducer<Dialog extends string>(state: State<Dialog>, action: Action<Dialog>): State<Dialog> {
+function reducer<Dialog extends string>(
+	state: State<Dialog>,
+	action: Action<Dialog>,
+): State<Dialog> {
 	switch (action.type) {
 		case 'OPEN_DIALOG':
 			return { ...state, [action.dialog]: true }
@@ -19,7 +22,9 @@ function reducer<Dialog extends string>(state: State<Dialog>, action: Action<Dia
 		case 'SET_DIALOG':
 			return { ...state, [action.dialog]: action.value }
 		case 'CLOSE_ALL':
-			return Object.fromEntries(Object.keys(state).map(key => [key, false])) as State<Dialog>
+			return Object.fromEntries(
+				Object.keys(state).map(key => [key, false]),
+			) as State<Dialog>
 		default:
 			return state
 	}
@@ -34,7 +39,8 @@ export function useDialogs<Dialog extends string>(initialState: State<Dialog>) {
 
 	const closeAll = () => dispatch({ type: 'CLOSE_ALL' })
 
-	const setState = (dialog: Dialog, value: boolean) => dispatch({ type: 'SET_DIALOG', dialog, value })
+	const setState = (dialog: Dialog, value: boolean) =>
+		dispatch({ type: 'SET_DIALOG', dialog, value })
 
 	return { state, setState, open, close, closeAll }
 }

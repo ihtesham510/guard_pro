@@ -16,11 +16,20 @@ import { cn } from '@/lib/utils'
 import { startOfWeek, endOfWeek } from 'date-fns'
 import { useQuery } from '@tanstack/react-query'
 import { shiftQueries, employeeQuries } from '@/services/queries'
-import { Day, shiftDays } from '@/constants'
+import { type Day, shiftDays } from '@/constants'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { QueryData } from '@/lib/types'
-import { Calendar, CalendarHeader, CalendarControlls, useCalendarContext } from '@/components/ui/event-calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import type { QueryData } from '@/lib/types'
+import {
+	Calendar,
+	CalendarHeader,
+	CalendarControlls,
+	useCalendarContext,
+} from '@/components/ui/event-calendar'
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover'
 import { Calendar as CalendarComp } from '@/components/ui/calendar'
 
 export const Route = createFileRoute('/dashboard/attendance')({
@@ -35,7 +44,9 @@ export const Route = createFileRoute('/dashboard/attendance')({
 
 function AttendanceTable() {
 	const { date, setDate } = useCalendarContext()
-	const { data: employees } = useQuery(employeeQuries.getEmployeeieWithAttendence())
+	const { data: employees } = useQuery(
+		employeeQuries.getEmployeeieWithAttendence(),
+	)
 
 	const weekStart = useMemo(() => startOfWeek(date), [date])
 	const weekEnd = useMemo(() => endOfWeek(date), [date])
@@ -53,7 +64,9 @@ function AttendanceTable() {
 					<div className='grid grid-cols-[200px_1fr] min-w-[1000px] w-full lg:min-w-0 lg:w-full'>
 						{/* Employee Column Header */}
 						<div className='p-4 md:p-5 lg:p-3 xl:p-4 border-r bg-muted/50'>
-							<h3 className='text-sm font-medium text-muted-foreground'>Employee</h3>
+							<h3 className='text-sm font-medium text-muted-foreground'>
+								Employee
+							</h3>
 						</div>
 
 						{/* Days Header */}
@@ -63,11 +76,14 @@ function AttendanceTable() {
 									key={day.toISOString()}
 									className={cn(
 										'p-4 md:p-5 lg:p-3 xl:p-4 cursor-pointer text-center border-r last:border-r-0 hover:bg-primary/5',
-										isSameDay(date, day) && 'bg-primary/5 border-primary border-l border-r border-t rounded-t-sm',
+										isSameDay(date, day) &&
+											'bg-primary/5 border-primary border-l border-r border-t rounded-t-sm',
 									)}
 									onClick={() => setDate(day)}
 								>
-									<p className='text-xs md:text-sm text-muted-foreground uppercase'>{format(day, 'EEE')}</p>
+									<p className='text-xs md:text-sm text-muted-foreground uppercase'>
+										{format(day, 'EEE')}
+									</p>
 									<p
 										className={cn(
 											'text-xl md:text-2xl lg:text-lg xl:text-xl font-semibold mt-1',
@@ -86,7 +102,10 @@ function AttendanceTable() {
 				<div className='divide-y'>
 					{employees?.map(employee => {
 						return (
-							<div key={employee.id} className='grid grid-cols-[200px_1fr] min-w-[1000px] w-full lg:min-w-0 lg:w-full'>
+							<div
+								key={employee.id}
+								className='grid grid-cols-[200px_1fr] min-w-[1000px] w-full lg:min-w-0 lg:w-full'
+							>
 								{/* Employee Info Column */}
 								<div className='p-3 md:p-4 lg:p-3 xl:p-4 border-r flex items-center gap-3 bg-muted/30'>
 									<Avatar className='size-10 md:size-12 lg:size-10 xl:size-11 shrink-0'>
@@ -98,7 +117,9 @@ function AttendanceTable() {
 										<p className='font-semibold text-sm md:text-base lg:text-sm xl:text-base truncate'>
 											{employee.firstName} {employee.lastName}
 										</p>
-										<p className='text-xs md:text-sm text-muted-foreground truncate'>{employee.employeeCode}</p>
+										<p className='text-xs md:text-sm text-muted-foreground truncate'>
+											{employee.employeeCode}
+										</p>
 									</div>
 								</div>
 
@@ -111,7 +132,8 @@ function AttendanceTable() {
 												key={day.toISOString()}
 												className={cn(
 													'min-h-[100px] md:min-h-[120px] lg:min-h-[80px] xl:min-h-[100px] p-2 border-r last:border-r-0 flex items-center justify-center',
-													isSameDay(date, day) && 'border-primary border-l border-r bg-primary/5',
+													isSameDay(date, day) &&
+														'border-primary border-l border-r bg-primary/5',
 												)}
 											>
 												{attendance?.status ?? '-'}
@@ -146,7 +168,11 @@ function AttendanceHeader() {
 						</div>
 					</PopoverTrigger>
 					<PopoverContent className='p-0 flex items-center justify-center'>
-						<CalendarComp mode='single' selected={date} onSelect={val => val && setDate(val)} />
+						<CalendarComp
+							mode='single'
+							selected={date}
+							onSelect={val => val && setDate(val)}
+						/>
 					</PopoverContent>
 				</Popover>
 				<span>
@@ -174,11 +200,17 @@ export function RouteComponent() {
 	)
 }
 
-function getEmployeeShift(employee: QueryData<typeof employeeQuries.getEmployeeieWithAttendence>, day: Date) {
+function getEmployeeShift(
+	employee: QueryData<typeof employeeQuries.getEmployeeieWithAttendence>,
+	day: Date,
+) {
 	return employee.shift_assignment
 		.map(assignedShifts => assignedShifts.shift)
 		?.find(shift => {
-			if (isBefore(day, shift.start_date) && !isSameDay(day, shift.start_date)) {
+			if (
+				isBefore(day, shift.start_date) &&
+				!isSameDay(day, shift.start_date)
+			) {
 				return false
 			}
 			const isExcludedDay = shift.shiftExcludeDay.some(excludeDay => {
@@ -204,7 +236,10 @@ function getEmployeeShift(employee: QueryData<typeof employeeQuries.getEmployeei
 		})
 }
 
-function getTodaysAttendance(employee: QueryData<typeof employeeQuries.getEmployeeieWithAttendence>, day: Date) {
+function getTodaysAttendance(
+	employee: QueryData<typeof employeeQuries.getEmployeeieWithAttendence>,
+	day: Date,
+) {
 	const shift = getEmployeeShift(employee, day)
 
 	let status: 'absent' | 'early' | 'late' | 'upcoming' | 'on-time' = 'absent'
@@ -223,7 +258,9 @@ function getTodaysAttendance(employee: QueryData<typeof employeeQuries.getEmploy
 
 	const startTime = parse(shift.start_time, 'h:mm a', day)
 
-	const timeEntry = employee.timeEntry.find(entry => isSameDay(entry.start_time, day))
+	const timeEntry = employee.timeEntry.find(entry =>
+		isSameDay(entry.start_time, day),
+	)
 
 	if (!timeEntry) {
 		status = 'absent'

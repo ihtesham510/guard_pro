@@ -1,12 +1,18 @@
-import { TrendingUp } from 'lucide-react'
-import { Bar, BarChart, Cell, XAxis, ReferenceLine } from 'recharts'
-import React from 'react'
-import { AnimatePresence } from 'motion/react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartConfig, ChartContainer } from '@/components/ui/chart'
-import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
 import { useMotionValueEvent, useSpring } from 'framer-motion'
+import { TrendingUp } from 'lucide-react'
+import { AnimatePresence } from 'motion/react'
+import React from 'react'
+import { Bar, BarChart, Cell, ReferenceLine, XAxis } from 'recharts'
+import { Badge } from '@/components/ui/badge'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
+import { type ChartConfig, ChartContainer } from '@/components/ui/chart'
+import { cn } from '@/lib/utils'
 
 const CHART_MARGIN = 35
 const CHART_COLOR = 'var(--secondary)'
@@ -38,7 +44,9 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function ValueLineBarChart() {
-	const [activeIndex, setActiveIndex] = React.useState<number | undefined>(undefined)
+	const [activeIndex, setActiveIndex] = React.useState<number | undefined>(
+		undefined,
+	)
 
 	const maxValueIndex = React.useMemo(() => {
 		if (activeIndex !== undefined) {
@@ -71,7 +79,9 @@ export function ValueLineBarChart() {
 		<Card>
 			<CardHeader>
 				<CardTitle className='flex items-center gap-2'>
-					<span className={cn('text-2xl tracking-tighter')}>${maxValueIndex.value}</span>
+					<span className={cn('text-2xl tracking-tighter')}>
+						${maxValueIndex.value}
+					</span>
 					<Badge variant='secondary'>
 						<TrendingUp className='h-4 w-4' />
 						<span>5.2%</span>
@@ -144,8 +154,20 @@ const CustomReferenceLabel: React.FC<CustomReferenceLabelProps> = props => {
 
 	return (
 		<>
-			<rect x={x - CHART_MARGIN} y={y - 9} width={width} height={18} fill={CHART_COLOR} rx={4} />
-			<text fontWeight={600} x={x - CHART_MARGIN + 6} y={y + 4} fill='var(--primary-foreground)'>
+			<rect
+				x={x - CHART_MARGIN}
+				y={y - 9}
+				width={width}
+				height={18}
+				fill={CHART_COLOR}
+				rx={4}
+			/>
+			<text
+				fontWeight={600}
+				x={x - CHART_MARGIN + 6}
+				y={y + 4}
+				fill='var(--primary-foreground)'
+			>
 				{value}
 			</text>
 		</>

@@ -53,7 +53,14 @@ export function IncidentReports() {
 								<div className='space-y-1'>
 									<div className='flex items-center gap-2'>
 										<span className='font-medium'>{incident.title}</span>
-										<Badge variant={incident.priority === 'high' ? 'destructive' : 'secondary'} className='text-xs'>
+										<Badge
+											variant={
+												incident.priority === 'high'
+													? 'destructive'
+													: 'secondary'
+											}
+											className='text-xs'
+										>
 											{incident.priority}
 										</Badge>
 									</div>
@@ -67,7 +74,9 @@ export function IncidentReports() {
 											{incident.time}
 										</div>
 									</div>
-									<div className='text-sm text-muted-foreground'>Reported by: {incident.reporter}</div>
+									<div className='text-sm text-muted-foreground'>
+										Reported by: {incident.reporter}
+									</div>
 								</div>
 								<Badge
 									variant={
@@ -81,7 +90,9 @@ export function IncidentReports() {
 									{incident.status}
 								</Badge>
 							</div>
-							<div className='text-xs text-muted-foreground'>ID: {incident.id}</div>
+							<div className='text-xs text-muted-foreground'>
+								ID: {incident.id}
+							</div>
 						</div>
 					))}
 				</div>

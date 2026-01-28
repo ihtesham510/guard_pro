@@ -12,8 +12,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { type EmployeeSelectSchema } from '@/services/employee.schema'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import type { EmployeeSelectSchema } from '@/services/employee.schema'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@/components/ui/input-group'
 import { deleteEmployee } from '@/services/employee.api'
 import { employeeQuries } from '@/services/queries'
 import { toast } from 'sonner'
@@ -38,7 +42,11 @@ const StatusBadge = ({ status }: { status: Employee['status'] }) => {
 }
 
 const PositionBadge = ({ position }: { position: Employee['position'] }) => {
-	return <Badge variant='secondary'>{position.charAt(0).toUpperCase() + position.slice(1)}</Badge>
+	return (
+		<Badge variant='secondary'>
+			{position.charAt(0).toUpperCase() + position.slice(1)}
+		</Badge>
+	)
 }
 
 interface EmployeesSimpleTableProps {
@@ -77,7 +85,11 @@ export function EmployeesSimpleTable({ data }: EmployeesSimpleTableProps) {
 	const handleDelete = React.useCallback(
 		async (employee: Employee, e?: React.MouseEvent) => {
 			e?.stopPropagation()
-			if (confirm(`Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`)) {
+			if (
+				confirm(
+					`Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`,
+				)
+			) {
 				await deleteEmployeeMutation.mutateAsync({ data: { id: employee.id } })
 			}
 		},
@@ -127,7 +139,9 @@ export function EmployeesSimpleTable({ data }: EmployeesSimpleTableProps) {
 
 				<div className='space-y-3'>
 					{filteredData.length === 0 ? (
-						<div className='text-center py-8 text-muted-foreground'>No employees found.</div>
+						<div className='text-center py-8 text-muted-foreground'>
+							No employees found.
+						</div>
 					) : (
 						filteredData.map(employee => (
 							<div
@@ -146,28 +160,49 @@ export function EmployeesSimpleTable({ data }: EmployeesSimpleTableProps) {
 											<p className='font-semibold truncate'>
 												{employee.firstName} {employee.lastName}
 											</p>
-											<p className='text-sm text-muted-foreground truncate'>{employee.email}</p>
+											<p className='text-sm text-muted-foreground truncate'>
+												{employee.email}
+											</p>
 											<div className='flex items-center gap-2 mt-1'>
-												<span className='text-xs text-muted-foreground'>{employee.employeeCode}</span>
+												<span className='text-xs text-muted-foreground'>
+													{employee.employeeCode}
+												</span>
 												<PositionBadge position={employee.position} />
 												<StatusBadge status={employee.status} />
 											</div>
 										</div>
 									</div>
 									<DropdownMenu>
-										<DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
-											<Button variant='ghost' size='icon' className='h-8 w-8 shrink-0'>
+										<DropdownMenuTrigger
+											asChild
+											onClick={e => e.stopPropagation()}
+										>
+											<Button
+												variant='ghost'
+												size='icon'
+												className='h-8 w-8 shrink-0'
+											>
 												<span className='sr-only'>Open menu</span>
 												<MoreHorizontal className='h-4 w-4' />
 											</Button>
 										</DropdownMenuTrigger>
 										<DropdownMenuContent align='end'>
 											<DropdownMenuLabel>Actions</DropdownMenuLabel>
-											<DropdownMenuItem onClick={() => navigator.clipboard.writeText(employee.id)}>
+											<DropdownMenuItem
+												onClick={() =>
+													navigator.clipboard.writeText(employee.id)
+												}
+											>
 												Copy employee ID
 											</DropdownMenuItem>
-											<DropdownMenuItem onClick={e => handleEdit(employee, e)}>Edit employee</DropdownMenuItem>
-											<DropdownMenuItem onClick={e => handleDelete(employee, e)}>Delete employee</DropdownMenuItem>
+											<DropdownMenuItem onClick={e => handleEdit(employee, e)}>
+												Edit employee
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={e => handleDelete(employee, e)}
+											>
+												Delete employee
+											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>
 								</div>
@@ -208,7 +243,11 @@ export function EmployeesSimpleTable({ data }: EmployeesSimpleTableProps) {
 						</TableRow>
 					) : (
 						filteredData.map(employee => (
-							<TableRow key={employee.id} onClick={() => handleRowClick(employee)} className='cursor-pointer'>
+							<TableRow
+								key={employee.id}
+								onClick={() => handleRowClick(employee)}
+								className='cursor-pointer'
+							>
 								<TableCell className='font-medium'>
 									<Avatar className='size-10 shrink-0'>
 										<AvatarFallback className='bg-primary/10 text-primary'>
@@ -216,7 +255,9 @@ export function EmployeesSimpleTable({ data }: EmployeesSimpleTableProps) {
 										</AvatarFallback>
 									</Avatar>
 								</TableCell>
-								<TableCell className='font-medium'>{employee.employeeCode}</TableCell>
+								<TableCell className='font-medium'>
+									{employee.employeeCode}
+								</TableCell>
 								<TableCell>
 									{employee.firstName} {employee.lastName}
 								</TableCell>
@@ -238,11 +279,21 @@ export function EmployeesSimpleTable({ data }: EmployeesSimpleTableProps) {
 										</DropdownMenuTrigger>
 										<DropdownMenuContent align='end'>
 											<DropdownMenuLabel>Actions</DropdownMenuLabel>
-											<DropdownMenuItem onClick={() => navigator.clipboard.writeText(employee.id)}>
+											<DropdownMenuItem
+												onClick={() =>
+													navigator.clipboard.writeText(employee.id)
+												}
+											>
 												Copy employee ID
 											</DropdownMenuItem>
-											<DropdownMenuItem onClick={e => handleEdit(employee, e)}>Edit employee</DropdownMenuItem>
-											<DropdownMenuItem onClick={e => handleDelete(employee, e)}>Delete employee</DropdownMenuItem>
+											<DropdownMenuItem onClick={e => handleEdit(employee, e)}>
+												Edit employee
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={e => handleDelete(employee, e)}
+											>
+												Delete employee
+											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>
 								</TableCell>

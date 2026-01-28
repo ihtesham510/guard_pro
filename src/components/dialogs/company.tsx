@@ -1,4 +1,18 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import Stepper, { Step } from '@/components/Stepper'
+import { FieldDescription, FieldLegend, FieldSet } from '@/components/ui/field'
+import {
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { PhoneInput } from '@/components/ui/phone-input'
 import {
 	ResponsiveDialog,
 	ResponsiveDialogContent,
@@ -6,20 +20,15 @@ import {
 	ResponsiveDialogHeader,
 	ResponsiveDialogTitle,
 } from '@/components/ui/responsive-dialog'
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { Textarea } from '@/components/ui/textarea'
 import { useAppState } from '@/context/app-context'
-import { useAuthentication } from '@/lib/auth-client'
-import { useMutation } from '@tanstack/react-query'
-import Stepper, { Step } from '@/components/Stepper'
-import { PhoneInput } from '../ui/phone-input'
-import { FieldSet, FieldDescription, FieldLegend } from '@/components/ui/field'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { useEffect } from 'react'
+import { useAuthentication } from '@/lib/auth-client'
 import { addCompany } from '@/services/company.api'
-import { companyInsertSchemaWithAddress, CompanyInsertSchemaWithAddress } from '@/services/company.schema'
-import { Textarea } from '../ui/textarea'
+import {
+	type CompanyInsertSchemaWithAddress,
+	companyInsertSchemaWithAddress,
+} from '@/services/company.schema'
 import { companyQueries } from '@/services/queries'
 
 export function CompanyDialog() {
@@ -56,12 +65,18 @@ export function CompanyDialog() {
 		if (!dialogs.state['add-company']) {
 			form.reset()
 		}
-	}, [dialogs.state['add-company']])
+	}, [dialogs.state['add-company'], form.reset])
 
 	return (
-		<ResponsiveDialog open={dialogs.state['add-company']} onOpenChange={e => dialogs.setState('add-company', e)}>
+		<ResponsiveDialog
+			open={dialogs.state['add-company']}
+			onOpenChange={e => dialogs.setState('add-company', e)}
+		>
 			<ResponsiveDialogContent className='min-w-xl'>
-				<ResponsiveDialogForm form={form} onSubmit={form.handleSubmit(handleSubmit)}>
+				<ResponsiveDialogForm
+					form={form}
+					onSubmit={form.handleSubmit(handleSubmit)}
+				>
 					<ResponsiveDialogHeader>
 						<ResponsiveDialogTitle>Add Company</ResponsiveDialogTitle>
 					</ResponsiveDialogHeader>
@@ -69,7 +84,9 @@ export function CompanyDialog() {
 						<Step>
 							<FieldSet>
 								<FieldLegend>Company Information</FieldLegend>
-								<FieldDescription>Provide company name and basic details.</FieldDescription>
+								<FieldDescription>
+									Provide company name and basic details.
+								</FieldDescription>
 
 								<FormField
 									control={form.control}
@@ -89,7 +106,9 @@ export function CompanyDialog() {
 						<Step>
 							<FieldSet>
 								<FieldLegend>Company Contact</FieldLegend>
-								<FieldDescription>Provide company phone number (optional).</FieldDescription>
+								<FieldDescription>
+									Provide company phone number (optional).
+								</FieldDescription>
 								<FormField
 									control={form.control}
 									name='email'
@@ -110,7 +129,10 @@ export function CompanyDialog() {
 										<FormItem>
 											<FormLabel>Phone</FormLabel>
 											<FormControl>
-												<PhoneInput {...field} value={field.value ?? undefined} />
+												<PhoneInput
+													{...field}
+													value={field.value ?? undefined}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -129,7 +151,11 @@ export function CompanyDialog() {
 										<FormItem>
 											<FormLabel>Address line 1</FormLabel>
 											<FormControl>
-												<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+												<Textarea
+													className='resize-none'
+													{...field}
+													value={field.value ?? undefined}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -142,7 +168,11 @@ export function CompanyDialog() {
 										<FormItem>
 											<FormLabel>Address line 2 (optional)</FormLabel>
 											<FormControl>
-												<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+												<Textarea
+													className='resize-none'
+													{...field}
+													value={field.value ?? undefined}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -153,7 +183,9 @@ export function CompanyDialog() {
 						<Step>
 							<FieldSet>
 								<FieldLegend>Company's Location</FieldLegend>
-								<FieldDescription>Provide Company's location, state, city and postal code</FieldDescription>
+								<FieldDescription>
+									Provide Company's location, state, city and postal code
+								</FieldDescription>
 								<div className='flex justify-between items-center gap-2'>
 									<FormField
 										control={form.control}

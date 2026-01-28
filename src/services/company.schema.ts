@@ -1,7 +1,10 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import type { z } from 'zod'
 import * as schema from '@/db/schema'
-import { z } from 'zod'
-import { addressInsertSchema, addressSelectSchema } from './address.schema'
+import {
+	addressInsertSchema,
+	addressSelectSchema,
+} from '@/services/address.schema'
 
 export const companyInsertSchema = createInsertSchema(schema.company)
 export const companyInsertSchemaWithAddress = companyInsertSchema.extend({
@@ -15,5 +18,9 @@ export const companySelectSchemaWithAddress = companySelectSchema.extend({
 export type CompanyInsertSchema = z.infer<typeof companyInsertSchema>
 export type CompanySelectSchema = z.infer<typeof companySelectSchema>
 
-export type CompanySelectSchemaWithAddress = z.infer<typeof companySelectSchemaWithAddress>
-export type CompanyInsertSchemaWithAddress = z.infer<typeof companyInsertSchemaWithAddress>
+export type CompanySelectSchemaWithAddress = z.infer<
+	typeof companySelectSchemaWithAddress
+>
+export type CompanyInsertSchemaWithAddress = z.infer<
+	typeof companyInsertSchemaWithAddress
+>

@@ -1,7 +1,12 @@
-import { createContext, PropsWithChildren, useCallback, useContext } from 'react'
+import { queryOptions, useMutation, useQuery } from '@tanstack/react-query'
 import { createServerFn } from '@tanstack/react-start'
 import { getCookie, setCookie } from '@tanstack/react-start/server'
-import { queryOptions, useMutation, useQuery } from '@tanstack/react-query'
+import {
+	createContext,
+	type PropsWithChildren,
+	useCallback,
+	useContext,
+} from 'react'
 
 type Theme = 'dark' | 'light'
 
@@ -43,10 +48,14 @@ export function ThemeProvider({ children }: PropsWithChildren) {
 
 	const toggleTheme = useCallback(() => {
 		themeMutation.mutate({ data: theme === 'dark' ? 'light' : 'dark' })
-	}, [theme])
+	}, [theme, themeMutation.mutate])
 	const setTheme = (theme: Theme) => themeMutation.mutate({ data: theme })
 
-	return <themeContext.Provider value={{ theme, toggleTheme, setTheme }}>{children}</themeContext.Provider>
+	return (
+		<themeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+			{children}
+		</themeContext.Provider>
+	)
 }
 
 export function useTheme() {

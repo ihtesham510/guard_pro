@@ -1,10 +1,9 @@
-import * as React from 'react'
 import { motion } from 'framer-motion'
 import { ImageOff } from 'lucide-react'
-
+import * as React from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from './avatar'
-import { Skeleton } from './skeleton'
 
 interface TrailCardProps extends React.HTMLAttributes<HTMLDivElement> {
 	imageUrl?: string
@@ -30,7 +29,11 @@ const TrailCard = React.forwardRef<HTMLDivElement, TrailCardProps>(
 					<Avatar className='h-full w-full rounded-xs object-cover'>
 						<AvatarImage src={imageUrl} alt={title} />
 						<AvatarFallback className='relative rounded-xs'>
-							{imageUrl ? <Skeleton className='absolute inset-0 rounded-xs' /> : <ImageOff className='size-8' />}
+							{imageUrl ? (
+								<Skeleton className='absolute inset-0 rounded-xs' />
+							) : (
+								<ImageOff className='size-8' />
+							)}
 						</AvatarFallback>
 					</Avatar>
 
@@ -43,7 +46,8 @@ const TrailCard = React.forwardRef<HTMLDivElement, TrailCardProps>(
                  backdrop-blur-md bg-white/6'
 						style={{
 							// smooth fade to the left; use mask (webkit) for better support
-							WebkitMaskImage: 'linear-gradient(to left, black 0%, transparent 100%)',
+							WebkitMaskImage:
+								'linear-gradient(to left, black 0%, transparent 100%)',
 							maskImage: 'linear-gradient(to left, black 0%, transparent 100%)',
 						}}
 					/>

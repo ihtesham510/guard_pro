@@ -1,14 +1,14 @@
-import { TrendingUp } from 'lucide-react'
-import { Bar, BarChart, Cell, XAxis, ReferenceLine } from 'recharts'
-import React from 'react'
-import { AnimatePresence } from 'motion/react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartConfig, ChartContainer } from '@/components/ui/chart'
-import { Badge } from '@/components/ui/badge'
-import { cn, getTrend } from '@/lib/utils'
-import { useMotionValueEvent, useSpring } from 'framer-motion'
 import { useDebouncedState } from '@mantine/hooks'
 import NumberFlow from '@number-flow/react'
+import { useMotionValueEvent, useSpring } from 'framer-motion'
+import { TrendingUp } from 'lucide-react'
+import { AnimatePresence } from 'motion/react'
+import React from 'react'
+import { Bar, BarChart, Cell, ReferenceLine, XAxis } from 'recharts'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { type ChartConfig, ChartContainer } from '@/components/ui/chart'
+import { cn, getTrend } from '@/lib/utils'
 
 const CHART_MARGIN = 35
 const CHART_COLOR = 'var(--chart-5)'
@@ -36,7 +36,10 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function MonthlyWorkHoursChart() {
-	const [activeIndex, setActiveIndex] = useDebouncedState<number>(chartData.length - 1, 80)
+	const [activeIndex, setActiveIndex] = useDebouncedState<number>(
+		chartData.length - 1,
+		80,
+	)
 
 	const defaultValueIndex = React.useMemo(() => {
 		if (activeIndex !== undefined) {
@@ -55,7 +58,9 @@ export function MonthlyWorkHoursChart() {
 		damping: 20,
 	})
 
-	const [springyValue, setSpringyValue] = React.useState(defaultValueIndex.value)
+	const [springyValue, setSpringyValue] = React.useState(
+		defaultValueIndex.value,
+	)
 
 	useMotionValueEvent(maxValueIndexSpring, 'change', latest => {
 		setSpringyValue(Number(latest.toFixed(0)))
@@ -66,18 +71,29 @@ export function MonthlyWorkHoursChart() {
 	}, [defaultValueIndex.value, maxValueIndexSpring])
 
 	const trendValue = React.useMemo(() => {
-		const firstValue = activeIndex ? (activeIndex === 0 ? 0 : activeIndex - 1) : activeIndex
-		return getTrend(chartData[firstValue ?? 0]!.hrs, chartData[activeIndex ?? 1]!.hrs)
+		const firstValue = activeIndex
+			? activeIndex === 0
+				? 0
+				: activeIndex - 1
+			: activeIndex
+		return getTrend(
+			chartData[firstValue ?? 0]!.hrs,
+			chartData[activeIndex ?? 1]!.hrs,
+		)
 	}, [activeIndex])
 
 	return (
 		<Card className='min-w-full'>
 			<CardHeader className='flex flex-col gap-2'>
 				<div className='w-full flex justify-between items-center'>
-					<CardTitle className='flex items-center justify-between gap-2 w-full'>Total Work hrs</CardTitle>
+					<CardTitle className='flex items-center justify-between gap-2 w-full'>
+						Total Work hrs
+					</CardTitle>
 
 					<span className='flex items-center gap-2'>
-						<span className={cn('text-lg font-sans gap-1 tracking-tighter flex')}>
+						<span
+							className={cn('text-lg font-sans gap-1 tracking-tighter flex')}
+						>
 							<NumberFlow value={defaultValueIndex.value} /> hrs
 						</span>
 						<Badge
@@ -93,7 +109,9 @@ export function MonthlyWorkHoursChart() {
 						</Badge>
 					</span>
 				</div>
-				<div className='flex w-full justify-end text-xs font-semibold'>vs. last month</div>
+				<div className='flex w-full justify-end text-xs font-semibold'>
+					vs. last month
+				</div>
 			</CardHeader>
 			<CardContent>
 				<AnimatePresence mode='wait'>
@@ -160,8 +178,20 @@ const CustomReferenceLabel: React.FC<CustomReferenceLabelProps> = props => {
 
 	return (
 		<>
-			<rect x={x - CHART_MARGIN} y={y - 9} width={width} height={18} fill={CHART_COLOR} rx={4} />
-			<text fontWeight={600} x={x - CHART_MARGIN + 6} y={y + 4} fill='var(--primary-foreground)'>
+			<rect
+				x={x - CHART_MARGIN}
+				y={y - 9}
+				width={width}
+				height={18}
+				fill={CHART_COLOR}
+				rx={4}
+			/>
+			<text
+				fontWeight={600}
+				x={x - CHART_MARGIN + 6}
+				y={y + 4}
+				fill='var(--primary-foreground)'
+			>
 				{value}
 			</text>
 		</>

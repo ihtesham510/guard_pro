@@ -1,7 +1,10 @@
-import * as schema from '@/db/schema'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import z from 'zod'
-import { addressInsertSchema, addressSelectSchema } from './address.schema'
+import type z from 'zod'
+import * as schema from '@/db/schema'
+import {
+	addressInsertSchema,
+	addressSelectSchema,
+} from '@/services/address.schema'
 
 export const employeeInsertSchema = createInsertSchema(schema.employee)
 export const employeInsertSchemaWithAddress = employeeInsertSchema
@@ -13,15 +16,23 @@ export const employeInsertSchemaWithAddress = employeeInsertSchema
 			return
 		}
 
-		const hasAnyAddressField = Object.entries(data.address).some(([key, value]) => {
-			if (key === 'id' || key === 'createdAt' || key === 'updatedAt') {
-				return false
-			}
-			return value !== undefined && value !== null && value !== ''
-		})
+		const hasAnyAddressField = Object.entries(data.address).some(
+			([key, value]) => {
+				if (key === 'id' || key === 'createdAt' || key === 'updatedAt') {
+					return false
+				}
+				return value !== undefined && value !== null && value !== ''
+			},
+		)
 
 		if (hasAnyAddressField) {
-			const requiredFields = ['address_line_1', 'state', 'city', 'zip', 'country'] as const
+			const requiredFields = [
+				'address_line_1',
+				'state',
+				'city',
+				'zip',
+				'country',
+			] as const
 			const missingFields: string[] = []
 
 			for (const field of requiredFields) {
@@ -51,5 +62,9 @@ export const employeeSelectSchemaWithAddress = employeeSelectSchema.extend({
 export type EmployeeInsertSchema = z.infer<typeof employeeInsertSchema>
 export type EmployeeSelectSchema = z.infer<typeof employeeSelectSchema>
 
-export type EmployeeSelectSchemaWithAddress = z.infer<typeof employeeSelectSchemaWithAddress>
-export type EmployeInsertSchemaWithAddress = z.infer<typeof employeInsertSchemaWithAddress>
+export type EmployeeSelectSchemaWithAddress = z.infer<
+	typeof employeeSelectSchemaWithAddress
+>
+export type EmployeInsertSchemaWithAddress = z.infer<
+	typeof employeInsertSchemaWithAddress
+>

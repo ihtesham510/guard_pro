@@ -1,16 +1,32 @@
-import * as React from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
+import type {
+	ColumnDef,
+	ColumnFiltersState,
+	FilterFnOption,
+	SortingState,
+	VisibilityState,
+} from '@tanstack/react-table'
 import {
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getSortedRowModel,
-	useReactTable,
 	type Row,
+	useReactTable,
 } from '@tanstack/react-table'
-import type { ColumnDef, ColumnFiltersState, SortingState, VisibilityState } from '@tanstack/react-table'
-import { CheckIcon, CornerDownRight, MoreHorizontal, SearchIcon, UserPlus2Icon } from 'lucide-react'
-
+import {
+	CheckIcon,
+	CornerDownRight,
+	MoreHorizontal,
+	SearchIcon,
+	UserPlus2Icon,
+} from 'lucide-react'
+import * as React from 'react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { CopyButton } from '@/components/ui/copy-btn'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -18,17 +34,16 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@/components/ui/input-group'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { type EmployeeSelectSchema } from '@/services/employee.schema'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { useRouter } from '@tanstack/react-router'
-import { useMutation } from '@tanstack/react-query'
-import { deleteEmployee } from '@/services/employee.api'
-import { employeeQuries } from '@/services/queries'
 import { useAppState } from '@/context/app-context'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { CopyButton } from '@/components/ui/copy-btn'
+import { deleteEmployee } from '@/services/employee.api'
+import type { EmployeeSelectSchema } from '@/services/employee.schema'
+import { employeeQuries } from '@/services/queries'
 
 type Employee = EmployeeSelectSchema
 
@@ -47,7 +62,11 @@ const StatusBadge = ({ status }: { status: Employee['status'] }) => {
 }
 
 const PositionBadge = ({ position }: { position: Employee['position'] }) => {
-	return <Badge variant='secondary'>{position.charAt(0).toUpperCase() + position.slice(1)}</Badge>
+	return (
+		<Badge variant='secondary'>
+			{position.charAt(0).toUpperCase() + position.slice(1)}
+		</Badge>
+	)
 }
 
 interface EmployeesDataTableProps {
@@ -78,7 +97,11 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 
 	const handleDelete = React.useCallback(
 		async (employee: Employee) => {
-			if (confirm(`Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`)) {
+			if (
+				confirm(
+					`Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`,
+				)
+			) {
 				await deleteEmployeeMutation.mutateAsync({ data: { id: employee.id } })
 			}
 		},
@@ -86,30 +109,36 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 	)
 
 	const [sorting, setSorting] = React.useState<SortingState>([])
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+		[],
+	)
 	const [globalFilter, setGlobalFilter] = React.useState<string>('')
-	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+	const [columnVisibility, setColumnVisibility] =
+		React.useState<VisibilityState>({})
 	const [rowSelection, setRowSelection] = React.useState({})
 
-	const customGlobalFilterFn = React.useCallback((row: Row<Employee>, _columnId: string, filterValue: unknown) => {
-		const searchValue = String(filterValue || '')
-			.toLowerCase()
-			.trim()
-		if (!searchValue) return true
+	const customGlobalFilterFn = React.useCallback(
+		(row: Row<Employee>, _columnId: string, filterValue: unknown) => {
+			const searchValue = String(filterValue || '')
+				.toLowerCase()
+				.trim()
+			if (!searchValue) return true
 
-		const employee = row.original
-		const searchableText = [
-			employee.firstName,
-			employee.lastName,
-			employee.employeeCode,
-			employee.email,
-			employee.phone || '',
-		]
-			.join(' ')
-			.toLowerCase()
+			const employee = row.original
+			const searchableText = [
+				employee.firstName,
+				employee.lastName,
+				employee.employeeCode,
+				employee.email,
+				employee.phone || '',
+			]
+				.join(' ')
+				.toLowerCase()
 
-		return searchableText.includes(searchValue)
-	}, [])
+			return searchableText.includes(searchValue)
+		},
+		[],
+	)
 
 	const columns = React.useMemo<ColumnDef<Employee>[]>(
 		() => [
@@ -117,12 +146,17 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 				id: 'avatar',
 				enableGlobalFilter: false,
 				cell: ({ row }) => (
-					<Avatar className='size-10 shrink-0 cursor-pointer' onClick={() => row.toggleSelected()}>
+					<Avatar
+						className='size-10 shrink-0 cursor-pointer'
+						onClick={() => row.toggleSelected()}
+					>
 						<AvatarFallback className='bg-primary/10 text-primary'>
 							{row.getIsSelected() ? (
 								<CheckIcon className='size-4' />
 							) : (
-								<p>{`${row.original.firstName[0]}${row.original.lastName[0]}`.toUpperCase()}</p>
+								<p>
+									{`${row.original.firstName[0]}${row.original.lastName[0]}`.toUpperCase()}
+								</p>
 							)}
 						</AvatarFallback>
 					</Avatar>
@@ -130,16 +164,20 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 			},
 			{
 				id: 'name & code',
-				accessorFn: row => `${row.firstName} ${row.lastName} ${row.employeeCode}`,
+				accessorFn: row =>
+					`${row.firstName} ${row.lastName} ${row.employeeCode}`,
 				enableGlobalFilter: true,
 				cell: ({ row }) => (
 					<div className='font-medium flex flex-col'>
 						<p className='flex items-center gap-0.5'>
-							{row.original.firstName} {row.original.lastName} <CopyButton text={row.original.employeeCode} />
+							{row.original.firstName} {row.original.lastName}{' '}
+							<CopyButton text={row.original.employeeCode} />
 						</p>
 						<span className='flex gap-1 items-center'>
 							<CornerDownRight className='size-3' />
-							<p className='text-xs text-muted-foreground/60'>{row.original.employeeCode}</p>
+							<p className='text-xs text-muted-foreground/60'>
+								{row.original.employeeCode}
+							</p>
 						</span>
 					</div>
 				),
@@ -153,7 +191,9 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 						<p>{row.original.email}</p>
 						<span className='flex gap-1 items-center'>
 							<CornerDownRight className='size-3' />
-							<p className='text-xs text-muted-foreground/60'>{row.original.phone}</p>
+							<p className='text-xs text-muted-foreground/60'>
+								{row.original.phone}
+							</p>
 						</span>
 					</div>
 				),
@@ -161,7 +201,9 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 			{
 				accessorKey: 'position',
 				enableGlobalFilter: false,
-				cell: ({ row }) => <PositionBadge position={row.getValue('position')} />,
+				cell: ({ row }) => (
+					<PositionBadge position={row.getValue('position')} />
+				),
 			},
 			{
 				accessorKey: 'status',
@@ -185,11 +227,17 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end'>
 								<DropdownMenuLabel>Actions</DropdownMenuLabel>
-								<DropdownMenuItem onClick={() => navigator.clipboard.writeText(employee.id)}>
+								<DropdownMenuItem
+									onClick={() => navigator.clipboard.writeText(employee.id)}
+								>
 									Copy employee ID
 								</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => handleEdit(employee)}>Edit employee</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => handleDelete(employee)}>Delete employee</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => handleEdit(employee)}>
+									Edit employee
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => handleDelete(employee)}>
+									Delete employee
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					)
@@ -208,7 +256,7 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
 		onGlobalFilterChange: setGlobalFilter,
-		globalFilterFn: customGlobalFilterFn as any,
+		globalFilterFn: customGlobalFilterFn as FilterFnOption<Employee>,
 		enableGlobalFilter: true,
 		onColumnVisibilityChange: setColumnVisibility,
 		onRowSelectionChange: setRowSelection,
@@ -250,15 +298,26 @@ export function EmployeesDataTable({ data }: EmployeesDataTableProps) {
 					<TableBody>
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map(row => (
-								<TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+								<TableRow
+									key={row.id}
+									data-state={row.getIsSelected() && 'selected'}
+								>
 									{row.getVisibleCells().map(cell => (
-										<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+										<TableCell key={cell.id}>
+											{flexRender(
+												cell.column.columnDef.cell,
+												cell.getContext(),
+											)}
+										</TableCell>
 									))}
 								</TableRow>
 							))
 						) : (
 							<TableRow className='border-b border-border'>
-								<TableCell colSpan={columns.length} className='h-24 text-center'>
+								<TableCell
+									colSpan={columns.length}
+									className='h-24 text-center'
+								>
 									No results.
 								</TableCell>
 							</TableRow>

@@ -1,5 +1,5 @@
-import { useTheme } from '@/context/theme-context'
 import { useCallback, useLayoutEffect, useState } from 'react'
+import { useTheme } from '@/context/theme-context'
 
 export const useThemeToggle = ({
 	variant = 'circle',
@@ -23,7 +23,7 @@ export const useThemeToggle = ({
 		} else {
 			document.documentElement.classList.remove('dark')
 		}
-	}, [setIsDark, theme])
+	}, [theme])
 
 	const styleId = 'theme-transition-styles'
 
@@ -60,7 +60,7 @@ export const useThemeToggle = ({
 		}
 
 		document.startViewTransition(switchTheme)
-	}, [theme, setTheme, variant, start, blur, gifUrl, updateStyles, isDark, setIsDark])
+	}, [theme, setTheme, variant, start, blur, gifUrl, updateStyles, isDark])
 
 	const setCrazyLightTheme = useCallback(() => {
 		setIsDark(false)
@@ -81,7 +81,7 @@ export const useThemeToggle = ({
 		}
 
 		document.startViewTransition(switchTheme)
-	}, [setTheme, variant, start, blur, gifUrl, updateStyles, setIsDark])
+	}, [setTheme, variant, start, blur, gifUrl, updateStyles])
 
 	const setCrazyDarkTheme = useCallback(() => {
 		setIsDark(true)
@@ -102,7 +102,7 @@ export const useThemeToggle = ({
 		}
 
 		document.startViewTransition(switchTheme)
-	}, [setTheme, variant, start, blur, gifUrl, updateStyles, setIsDark])
+	}, [setTheme, variant, start, blur, gifUrl, updateStyles])
 
 	return {
 		isDark,
@@ -113,7 +113,12 @@ export const useThemeToggle = ({
 	}
 }
 
-export type AnimationVariant = 'circle' | 'rectangle' | 'gif' | 'polygon' | 'circle-blur'
+export type AnimationVariant =
+	| 'circle'
+	| 'rectangle'
+	| 'gif'
+	| 'polygon'
+	| 'circle-blur'
 export type AnimationStart =
 	| 'top-left'
 	| 'top-right'

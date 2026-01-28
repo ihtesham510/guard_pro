@@ -1,6 +1,6 @@
-import { employeeQuries } from '@/services/queries'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { employeeQuries } from '@/services/queries'
 
 export const Route = createFileRoute('/dashboard/employees/$Id')({
 	component: RouteComponent,

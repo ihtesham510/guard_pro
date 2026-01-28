@@ -1,7 +1,13 @@
 import { AnimatedText } from '@/components/ui/animated-text'
 import { cn } from '@/lib/utils'
 
-export function DashboardTitle({ title, className }: { title: string; className?: string }) {
+export function DashboardTitle({
+	title,
+	className,
+}: {
+	title: string
+	className?: string
+}) {
 	return (
 		<AnimatedText
 			text={title}

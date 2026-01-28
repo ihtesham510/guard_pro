@@ -1,8 +1,8 @@
 import React from 'react'
-import { CompanyDialog } from './company'
-import { EmployeeDialog } from './employee'
-import { SiteDialog } from './sites'
-import { ShiftDialog } from './shift'
+import { CompanyDialog } from '@/components/dialogs/company'
+import { EmployeeDialog } from '@/components/dialogs/employee'
+import { ShiftDialog } from '@/components/dialogs/shift'
+import { SiteDialog } from '@/components/dialogs/sites'
 
 export function RenderDialogs() {
 	return (

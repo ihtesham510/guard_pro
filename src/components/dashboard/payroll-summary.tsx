@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Clock, DollarSign, FileText, TrendingUp } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { DollarSign, Clock, FileText, TrendingUp } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const payrollData = {
 	totalHours: 1248,
@@ -41,7 +41,9 @@ export function PayrollSummary() {
 							</div>
 						</div>
 						<div className='space-y-1'>
-							<div className='text-2xl font-bold'>{payrollData.totalAmount}</div>
+							<div className='text-2xl font-bold'>
+								{payrollData.totalAmount}
+							</div>
 							<div className='text-xs text-muted-foreground flex items-center gap-1'>
 								<TrendingUp className='h-3 w-3 text-green-600' />
 								{payrollData.weeklyIncrease}
@@ -64,14 +66,24 @@ export function PayrollSummary() {
 					<div className='space-y-2'>
 						<div className='text-sm font-medium'>Recent Entries</div>
 						{recentPayroll.map((entry, index) => (
-							<div key={index} className='flex items-center justify-between text-sm'>
+							<div
+								key={index}
+								className='flex items-center justify-between text-sm'
+							>
 								<div>
 									<div className='font-medium'>{entry.guard}</div>
-									<div className='text-xs text-muted-foreground'>{entry.hours}h</div>
+									<div className='text-xs text-muted-foreground'>
+										{entry.hours}h
+									</div>
 								</div>
 								<div className='text-right'>
 									<div className='font-medium'>{entry.amount}</div>
-									<Badge variant={entry.status === 'approved' ? 'default' : 'secondary'} className='text-xs'>
+									<Badge
+										variant={
+											entry.status === 'approved' ? 'default' : 'secondary'
+										}
+										className='text-xs'
+									>
 										{entry.status}
 									</Badge>
 								</div>

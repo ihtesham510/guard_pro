@@ -2,7 +2,14 @@ import { DashboardTitle } from '@/components/dashboard/dashboard-title'
 import { SiteDataTable } from '@/components/dashboard/sites/data-table'
 import { SiteCardView } from '@/components/dashboard/sites/card-view'
 import { Button } from '@/components/ui/button'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from '@/components/ui/empty'
 import { Spinner } from '@/components/ui/spinner'
 import { useAppState } from '@/context/app-context'
 import { siteQueries } from '@/services/queries'
@@ -32,7 +39,9 @@ function RouteComponent() {
 						<NavigationOff />
 					</EmptyMedia>
 					<EmptyTitle>No Sites Yet</EmptyTitle>
-					<EmptyDescription>You haven't added any sites yet. Get Started by adding sites.</EmptyDescription>
+					<EmptyDescription>
+						You haven't added any sites yet. Get Started by adding sites.
+					</EmptyDescription>
 				</EmptyHeader>
 				<EmptyContent>
 					<Button onClick={() => dialogs.open('add-site')}>Add Site</Button>
@@ -73,7 +82,11 @@ function RouteComponent() {
 					</div>
 				)}
 
-				{viewMode === 'table' && !mobile ? <SiteDataTable data={data} /> : <SiteCardView data={data} />}
+				{viewMode === 'table' && !mobile ? (
+					<SiteDataTable data={data} />
+				) : (
+					<SiteCardView data={data} />
+				)}
 			</div>
 		</Suspense>
 	)

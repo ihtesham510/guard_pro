@@ -1,4 +1,11 @@
-import * as React from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
+import type {
+	ColumnDef,
+	ColumnFiltersState,
+	SortingState,
+	VisibilityState,
+} from '@tanstack/react-table'
 import {
 	flexRender,
 	getCoreRowModel,
@@ -7,9 +14,9 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table'
-import type { ColumnDef, ColumnFiltersState, SortingState, VisibilityState } from '@tanstack/react-table'
 import { MoreHorizontal, SearchIcon } from 'lucide-react'
-
+import * as React from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
@@ -18,14 +25,22 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { useRouter } from '@tanstack/react-router'
-import { SiteSelectSchemaWithAddress } from '@/services/site.schema'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteSite } from '@/services/site.api'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@/components/ui/input-group'
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table'
 import { siteQueries } from '@/services/queries'
-import { toast } from 'sonner'
+import { deleteSite } from '@/services/site.api'
+import type { SiteSelectSchemaWithAddress } from '@/services/site.schema'
 
 type Site = SiteSelectSchemaWithAddress
 
@@ -68,8 +83,11 @@ export function SiteDataTable({ data }: DataTableProps) {
 	)
 
 	const [sorting, setSorting] = React.useState<SortingState>([])
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+		[],
+	)
+	const [columnVisibility, setColumnVisibility] =
+		React.useState<VisibilityState>({})
 	const [rowSelection, setRowSelection] = React.useState({})
 
 	const columns = React.useMemo<ColumnDef<Site>[]>(
@@ -91,7 +109,9 @@ export function SiteDataTable({ data }: DataTableProps) {
 			{
 				accessorKey: 'contactEmail',
 				header: 'Contact Email',
-				cell: ({ row }) => <div className='lowercase'>{row.getValue('contactEmail') || '-'}</div>,
+				cell: ({ row }) => (
+					<div className='lowercase'>{row.getValue('contactEmail') || '-'}</div>
+				),
 			},
 			{
 				accessorKey: 'contactPhone',
@@ -130,9 +150,17 @@ export function SiteDataTable({ data }: DataTableProps) {
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end'>
 								<DropdownMenuLabel>Actions</DropdownMenuLabel>
-								<DropdownMenuItem onClick={() => navigator.clipboard.writeText(site.id)}>Copy id</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => handleEdit(site)}>Edit</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => handleDelete(site)}>Delete</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={() => navigator.clipboard.writeText(site.id)}
+								>
+									Copy id
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => handleEdit(site)}>
+									Edit
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => handleDelete(site)}>
+									Delete
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					)
@@ -168,7 +196,9 @@ export function SiteDataTable({ data }: DataTableProps) {
 					<InputGroupInput
 						placeholder='Filter by name...'
 						value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-						onChange={event => table.getColumn('name')?.setFilterValue(event.target.value)}
+						onChange={event =>
+							table.getColumn('name')?.setFilterValue(event.target.value)
+						}
 					/>
 					<InputGroupAddon align='inline-start'>
 						<SearchIcon />
@@ -183,7 +213,12 @@ export function SiteDataTable({ data }: DataTableProps) {
 							{headerGroup.headers.map(header => {
 								return (
 									<TableHead key={header.id}>
-										{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef.header,
+													header.getContext(),
+												)}
 									</TableHead>
 								)
 							})}
@@ -208,7 +243,9 @@ export function SiteDataTable({ data }: DataTableProps) {
 								className='cursor-pointer'
 							>
 								{row.getVisibleCells().map(cell => (
-									<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+									<TableCell key={cell.id}>
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</TableCell>
 								))}
 							</TableRow>
 						))

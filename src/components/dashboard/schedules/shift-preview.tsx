@@ -1,10 +1,14 @@
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { QueryData } from '@/lib/types'
-import { shiftQueries } from '@/services/queries'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Clock, DollarSign, FileText, ImageOff } from 'lucide-react'
-import { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from '@/components/ui/hover-card'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { QueryData } from '@/lib/types'
+import type { shiftQueries } from '@/services/queries'
 
 export function ShiftPreview({
 	shift,
@@ -14,7 +18,9 @@ export function ShiftPreview({
 	shift: QueryData<typeof shiftQueries.getShifts>
 	disabled?: boolean
 } & PropsWithChildren) {
-	const assignedEmployees = shift.shift_assignment.map(assignment => assignment.employee)
+	const assignedEmployees = shift.shift_assignment.map(
+		assignment => assignment.employee,
+	)
 	const imageUrl = shift.site.pictures[0]?.url
 	if (disabled) return children
 
@@ -25,15 +31,22 @@ export function ShiftPreview({
 				<Avatar className='h-48 w-full rounded-xs object-cover'>
 					<AvatarImage src={imageUrl} alt='site image' />
 					<AvatarFallback className='relative rounded-xs'>
-						{imageUrl ? <Skeleton className='absolute inset-0 rounded-xs' /> : <ImageOff className='size-8' />}
+						{imageUrl ? (
+							<Skeleton className='absolute inset-0 rounded-xs' />
+						) : (
+							<ImageOff className='size-8' />
+						)}
 					</AvatarFallback>
 				</Avatar>
 				<div className='p-4 space-y-4'>
 					{assignedEmployees.length > 0 && (
 						<div className='flex items-center -space-x-4'>
 							{assignedEmployees.map(employee => (
-								<Avatar>
-									<AvatarFallback> {`${employee.firstName[0]}${employee.lastName[0]}`}</AvatarFallback>
+								<Avatar key={employee.id}>
+									<AvatarFallback>
+										{' '}
+										{`${employee.firstName[0]}${employee.lastName[0]}`}
+									</AvatarFallback>
 								</Avatar>
 							))}
 						</div>
@@ -66,9 +79,13 @@ export function ShiftPreview({
 							<div className='flex-1 min-w-0'>
 								<p className='text-xs text-muted-foreground mb-1'>Notes</p>
 								{shift.notes ? (
-									<p className='text-sm text-foreground line-clamp-3'>{shift.notes}</p>
+									<p className='text-sm text-foreground line-clamp-3'>
+										{shift.notes}
+									</p>
 								) : (
-									<p className='text-sm text-muted-foreground italic'>No notes</p>
+									<p className='text-sm text-muted-foreground italic'>
+										No notes
+									</p>
 								)}
 							</div>
 						</div>

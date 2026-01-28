@@ -1,11 +1,25 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { companyInsertSchemaWithAddress, CompanyInsertSchemaWithAddress } from '@/services/company.schema'
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from '@/components/ui/form'
+import {
+	companyInsertSchemaWithAddress,
+	type CompanyInsertSchemaWithAddress,
+} from '@/services/company.schema'
+import {
+	FormField,
+	FormItem,
+	FormLabel,
+	FormControl,
+	FormMessage,
+	Form,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { FieldSet, FieldDescription, FieldLegend } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import { useMutation, useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
+import {
+	useMutation,
+	useSuspenseQuery,
+	useQueryClient,
+} from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { companyQueries } from '@/services/queries'
 import { Button } from '@/components/ui/button'
@@ -17,7 +31,9 @@ import { Spinner } from '@/components/ui/spinner'
 export const Route = createFileRoute('/dashboard/companies/edit/$companyId')({
 	component: RouteComponent,
 	loader: async ({ context: { queryClient }, params }) => {
-		await queryClient.ensureQueryData(companyQueries.getCompanyWithAddress(params.companyId))
+		await queryClient.ensureQueryData(
+			companyQueries.getCompanyWithAddress(params.companyId),
+		)
 	},
 })
 
@@ -25,7 +41,9 @@ function RouteComponent() {
 	const { companyId } = Route.useParams()
 	const router = useRouter()
 	const queryClient = useQueryClient()
-	const { data: company } = useSuspenseQuery(companyQueries.getCompanyWithAddress(companyId))
+	const { data: company } = useSuspenseQuery(
+		companyQueries.getCompanyWithAddress(companyId),
+	)
 
 	const updateCompanyMutation = useMutation({
 		mutationFn: updateCompany,
@@ -78,7 +96,9 @@ function RouteComponent() {
 				<form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-6'>
 					<FieldSet>
 						<FieldLegend>Company Information</FieldLegend>
-						<FieldDescription>Provide company name and basic details.</FieldDescription>
+						<FieldDescription>
+							Provide company name and basic details.
+						</FieldDescription>
 
 						<FormField
 							control={form.control}
@@ -97,7 +117,9 @@ function RouteComponent() {
 
 					<FieldSet>
 						<FieldLegend>Company Contact</FieldLegend>
-						<FieldDescription>Provide company phone number (optional).</FieldDescription>
+						<FieldDescription>
+							Provide company phone number (optional).
+						</FieldDescription>
 						<FormField
 							control={form.control}
 							name='email'
@@ -136,7 +158,11 @@ function RouteComponent() {
 								<FormItem>
 									<FormLabel>Address line 1</FormLabel>
 									<FormControl>
-										<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+										<Textarea
+											className='resize-none'
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -149,7 +175,11 @@ function RouteComponent() {
 								<FormItem>
 									<FormLabel>Address line 2 (optional)</FormLabel>
 									<FormControl>
-										<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+										<Textarea
+											className='resize-none'
+											{...field}
+											value={field.value ?? undefined}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -159,7 +189,9 @@ function RouteComponent() {
 
 					<FieldSet>
 						<FieldLegend>Company's Location</FieldLegend>
-						<FieldDescription>Provide Company's location, state, city and postal code</FieldDescription>
+						<FieldDescription>
+							Provide Company's location, state, city and postal code
+						</FieldDescription>
 						<div className='flex justify-between items-center gap-2'>
 							<FormField
 								control={form.control}
@@ -219,7 +251,11 @@ function RouteComponent() {
 					</FieldSet>
 
 					<div className='flex justify-end gap-2'>
-						<Button type='button' variant='outline' onClick={() => router.navigate({ to: '/dashboard/companies' })}>
+						<Button
+							type='button'
+							variant='outline'
+							onClick={() => router.navigate({ to: '/dashboard/companies' })}
+						>
 							Cancel
 						</Button>
 						<Button type='submit' disabled={updateCompanyMutation.isPending}>

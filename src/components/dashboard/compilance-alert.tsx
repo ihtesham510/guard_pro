@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AlertTriangle, Calendar, Shield } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Shield, Calendar, AlertTriangle } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const complianceAlerts = [
 	{
@@ -71,7 +71,9 @@ export function ComplianceAlerts() {
 									</div>
 									<div className='flex items-center gap-1 text-xs text-muted-foreground'>
 										<Calendar className='h-3 w-3' />
-										{alert.daysLeft === 0 ? 'Overdue' : `${alert.daysLeft} days left`}
+										{alert.daysLeft === 0
+											? 'Overdue'
+											: `${alert.daysLeft} days left`}
 									</div>
 								</div>
 								<Badge
@@ -92,7 +94,11 @@ export function ComplianceAlerts() {
 						</div>
 					))}
 				</div>
-				<Button variant='outline' size='sm' className='w-full mt-4 bg-transparent'>
+				<Button
+					variant='outline'
+					size='sm'
+					className='w-full mt-4 bg-transparent'
+				>
 					View All Compliance Items
 				</Button>
 			</CardContent>

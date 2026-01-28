@@ -1,4 +1,5 @@
-import { type LucideIcon } from 'lucide-react'
+import { Link, type LinkProps } from '@tanstack/react-router'
+import type { LucideIcon } from 'lucide-react'
 import {
 	SidebarGroup,
 	SidebarGroupContent,
@@ -7,7 +8,6 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { Link, type LinkProps } from '@tanstack/react-router'
 
 export interface NavMainProps {
 	label?: string
@@ -31,7 +31,10 @@ export function NavMain({ items, label }: NavMainProps) {
 						return (
 							<Link {...item.href} key={item.title}>
 								<SidebarMenuItem onClick={item.onClick}>
-									<SidebarMenuButton isActive={item.isActive} tooltip={item.title}>
+									<SidebarMenuButton
+										isActive={item.isActive}
+										tooltip={item.title}
+									>
 										{item.icon && <item.icon />}
 										<span>{item.title}</span>
 									</SidebarMenuButton>

@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Calendar, Clock, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Calendar, Clock, MapPin } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const upcomingShifts = [
 	{
@@ -48,10 +48,15 @@ export function RosterSnapshot() {
 			</CardHeader>
 			<CardContent>
 				<div className='space-y-4'>
-					<div className='text-sm text-muted-foreground'>Today's Shifts - {new Date().toLocaleDateString()}</div>
+					<div className='text-sm text-muted-foreground'>
+						Today's Shifts - {new Date().toLocaleDateString()}
+					</div>
 					<div className='space-y-3'>
 						{upcomingShifts.map(shift => (
-							<div key={shift.id} className='flex items-center justify-between p-3 rounded-lg border'>
+							<div
+								key={shift.id}
+								className='flex items-center justify-between p-3 rounded-lg border'
+							>
 								<div className='flex items-center gap-3'>
 									<div className='w-2 h-2 rounded-full bg-blue-600' />
 									<div>
@@ -68,7 +73,13 @@ export function RosterSnapshot() {
 										</div>
 									</div>
 								</div>
-								<Badge variant={shift.status === 'confirmed' ? 'default' : 'secondary'}>{shift.status}</Badge>
+								<Badge
+									variant={
+										shift.status === 'confirmed' ? 'default' : 'secondary'
+									}
+								>
+									{shift.status}
+								</Badge>
 							</div>
 						))}
 					</div>

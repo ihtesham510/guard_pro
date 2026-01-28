@@ -1,6 +1,6 @@
-import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
-import { Button } from './button'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export const ThemeToggleButton = ({
 	className = '',

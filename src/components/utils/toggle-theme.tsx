@@ -1,5 +1,5 @@
+import { ThemeToggleButton } from '@/components/ui/theme-toggle'
 import { useThemeToggle } from '@/hooks/use-theme-toggle'
-import { ThemeToggleButton } from '../ui/theme-toggle'
 
 export function ThemeToggle() {
 	const { toggleTheme, isDark } = useThemeToggle({

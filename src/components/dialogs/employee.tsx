@@ -1,4 +1,26 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { WandSparkles } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import type z from 'zod'
+import Stepper, { Step } from '@/components/Stepper'
+import { Button } from '@/components/ui/button'
+import { FieldDescription, FieldLegend, FieldSet } from '@/components/ui/field'
+import {
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@/components/ui/input-group'
+import { PhoneInput } from '@/components/ui/phone-input'
 import {
 	ResponsiveDialog,
 	ResponsiveDialogContent,
@@ -6,29 +28,27 @@ import {
 	ResponsiveDialogHeader,
 	ResponsiveDialogTitle,
 } from '@/components/ui/responsive-dialog'
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { zodResolver } from '@hookform/resolvers/zod'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { useAppState } from '@/context/app-context'
-import { employeInsertSchemaWithAddress } from '@/services/employee.schema'
-import { useAuthentication } from '@/lib/auth-client'
-import { useMutation } from '@tanstack/react-query'
-import { addEmployee } from '@/services/employee.api'
-import { employeeQuries } from '@/services/queries'
-import Stepper, { Step } from '@/components/Stepper'
-import { PhoneInput } from '../ui/phone-input'
-import { FieldSet, FieldDescription, FieldLegend } from '@/components/ui/field'
-import { Textarea } from '../ui/textarea'
-import z from 'zod'
-import { useIsMobile } from '@/hooks/use-mobile'
 import { enums } from '@/db/schema'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { useAuthentication } from '@/lib/auth-client'
 import { capitalizeFirstLetter, generateEmployeeCode } from '@/lib/utils'
-import { useEffect, useState } from 'react'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
-import { WandSparkles } from 'lucide-react'
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { addEmployee } from '@/services/employee.api'
+import { employeInsertSchemaWithAddress } from '@/services/employee.schema'
+import { employeeQuries } from '@/services/queries'
 
 export function EmployeeDialog() {
 	const { user } = useAuthentication()
@@ -42,25 +62,27 @@ export function EmployeeDialog() {
 			errorMessage: 'Error while adding employee',
 		},
 	})
-	const schema = employeInsertSchemaWithAddress.superRefine(({ employeeCode }, ctx) => {
-		const symbol_regex = /[^a-zA-Z0-9]/
-		const hasAppropiatelenght = employeeCode && employeeCode.length === 8
-		const hasAnySymbols = !!(employeeCode && symbol_regex.test(employeeCode))
-		if (!hasAppropiatelenght) {
-			ctx.addIssue({
-				code: 'custom',
-				message: 'Code must of under 8 characters',
-				path: ['employeeCode'],
-			})
-		}
-		if (hasAnySymbols) {
-			ctx.addIssue({
-				code: 'custom',
-				message: 'Code must not contain any symbols',
-				path: ['employeeCode'],
-			})
-		}
-	})
+	const schema = employeInsertSchemaWithAddress.superRefine(
+		({ employeeCode }, ctx) => {
+			const symbol_regex = /[^a-zA-Z0-9]/
+			const hasAppropiatelenght = employeeCode && employeeCode.length === 8
+			const hasAnySymbols = !!(employeeCode && symbol_regex.test(employeeCode))
+			if (!hasAppropiatelenght) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Code must of under 8 characters',
+					path: ['employeeCode'],
+				})
+			}
+			if (hasAnySymbols) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Code must not contain any symbols',
+					path: ['employeeCode'],
+				})
+			}
+		},
+	)
 
 	const form = useForm<z.infer<typeof schema>>({
 		resolver: zodResolver(schema),
@@ -75,7 +97,14 @@ export function EmployeeDialog() {
 	const handleSubmit = async (values: z.infer<typeof schema>) => {
 		const cleanedValues = { ...values }
 		if (cleanedValues.address) {
-			const addressFields = ['address_line_1', 'address_line_2', 'state', 'city', 'zip', 'country'] as const
+			const addressFields = [
+				'address_line_1',
+				'address_line_2',
+				'state',
+				'city',
+				'zip',
+				'country',
+			] as const
 			const hasAnyAddressField = addressFields.some(field => {
 				const value = cleanedValues.address?.[field]
 				return value !== undefined && value !== null && value !== ''
@@ -103,12 +132,18 @@ export function EmployeeDialog() {
 			form.reset()
 			setCurrentStep(1)
 		}
-	}, [dialogs.state['add-employee']])
+	}, [dialogs.state['add-employee'], form.reset])
 
 	return (
-		<ResponsiveDialog open={dialogs.state['add-employee']} onOpenChange={e => dialogs.setState('add-employee', e)}>
+		<ResponsiveDialog
+			open={dialogs.state['add-employee']}
+			onOpenChange={e => dialogs.setState('add-employee', e)}
+		>
 			<ResponsiveDialogContent>
-				<ResponsiveDialogForm form={form} onSubmit={form.handleSubmit(handleSubmit)}>
+				<ResponsiveDialogForm
+					form={form}
+					onSubmit={form.handleSubmit(handleSubmit)}
+				>
 					<ResponsiveDialogHeader>
 						<ResponsiveDialogTitle>Add Employee</ResponsiveDialogTitle>
 					</ResponsiveDialogHeader>
@@ -121,7 +156,9 @@ export function EmployeeDialog() {
 						<Step>
 							<FieldSet>
 								<FieldLegend>Employee Name</FieldLegend>
-								<FieldDescription>Provide employee first and last name.</FieldDescription>
+								<FieldDescription>
+									Provide employee first and last name.
+								</FieldDescription>
 
 								<FormField
 									control={form.control}
@@ -154,7 +191,9 @@ export function EmployeeDialog() {
 						<Step>
 							<FieldSet>
 								<FieldLegend>Employee's Contact</FieldLegend>
-								<FieldDescription>Provide employee's work or personal phone number and email.</FieldDescription>
+								<FieldDescription>
+									Provide employee's work or personal phone number and email.
+								</FieldDescription>
 								<FormField
 									control={form.control}
 									name='email'
@@ -188,7 +227,9 @@ export function EmployeeDialog() {
 								<div className='flex items-center justify-between mb-2'>
 									<div>
 										<FieldLegend>Employee Address</FieldLegend>
-										<FieldDescription>Provide employee's address.</FieldDescription>
+										<FieldDescription>
+											Provide employee's address.
+										</FieldDescription>
 									</div>
 									<Button
 										type='button'
@@ -207,7 +248,11 @@ export function EmployeeDialog() {
 										<FormItem>
 											<FormLabel>Address line 1 (optional)</FormLabel>
 											<FormControl>
-												<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+												<Textarea
+													className='resize-none'
+													{...field}
+													value={field.value ?? undefined}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -220,7 +265,11 @@ export function EmployeeDialog() {
 										<FormItem>
 											<FormLabel>Address line 2 (optional)</FormLabel>
 											<FormControl>
-												<Textarea className='resize-none' {...field} value={field.value ?? undefined} />
+												<Textarea
+													className='resize-none'
+													{...field}
+													value={field.value ?? undefined}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -233,7 +282,9 @@ export function EmployeeDialog() {
 								<div className='flex items-center justify-between mb-2'>
 									<div>
 										<FieldLegend>Employee's Location</FieldLegend>
-										<FieldDescription>Provide employee's location, state, city and postal code</FieldDescription>
+										<FieldDescription>
+											Provide employee's location, state, city and postal code
+										</FieldDescription>
 									</div>
 									<Button
 										type='button'
@@ -306,7 +357,9 @@ export function EmployeeDialog() {
 						<Step>
 							<FieldSet>
 								<FieldLegend>Employee's Identification</FieldLegend>
-								<FieldDescription>Generate or enter employees code and his/her's postions.</FieldDescription>
+								<FieldDescription>
+									Generate or enter employees code and his/her's postions.
+								</FieldDescription>
 								<FormField
 									control={form.control}
 									name='employeeCode'
@@ -315,17 +368,27 @@ export function EmployeeDialog() {
 											<FormLabel>Employee Code</FormLabel>
 											<FormControl>
 												<InputGroup>
-													<InputGroupInput {...field} value={field.value ?? undefined} />
+													<InputGroupInput
+														{...field}
+														value={field.value ?? undefined}
+													/>
 													<InputGroupAddon
 														align='inline-end'
 														className='cursor-pointer'
-														onClick={() => form.setValue('employeeCode', generateEmployeeCode())}
+														onClick={() =>
+															form.setValue(
+																'employeeCode',
+																generateEmployeeCode(),
+															)
+														}
 													>
 														<Tooltip>
 															<TooltipTrigger asChild>
 																<WandSparkles />
 															</TooltipTrigger>
-															<TooltipContent>Generate Employee Code</TooltipContent>
+															<TooltipContent>
+																Generate Employee Code
+															</TooltipContent>
 														</Tooltip>
 													</InputGroupAddon>
 												</InputGroup>
@@ -343,7 +406,10 @@ export function EmployeeDialog() {
 											<FormControl>
 												<Select {...field}>
 													<SelectTrigger className='w-full'>
-														<SelectValue className='w-full' placeholder='select position' />
+														<SelectValue
+															className='w-full'
+															placeholder='select position'
+														/>
 													</SelectTrigger>
 													<SelectContent>
 														{enums.employeePositionEnum.map((pos, i) => (

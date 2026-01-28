@@ -1,10 +1,14 @@
+import {
+	MutationCache,
+	QueryClient,
+	QueryClientProvider,
+	type QueryKey,
+} from '@tanstack/react-query'
 import { createRouter as createTanstackRouter } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
-
-import { routeTree } from './routeTree.gen'
-import { MutationCache, QueryClient, QueryClientProvider, QueryKey } from '@tanstack/react-query'
-import React from 'react'
+import type React from 'react'
 import { toast } from 'sonner'
+import { routeTree } from '@/routeTree.gen'
 
 declare module '@tanstack/react-router' {
 	interface Register {
@@ -15,6 +19,7 @@ declare module '@tanstack/react-router' {
 declare module '@tanstack/react-query' {
 	interface Register {
 		mutationMeta: {
+			// biome-ignore lint/suspicious/noExplicitAny: <value can by type any>
 			updateQueryData?: { key: string[]; value?: any }[]
 			invalidateQuries?: QueryKey
 			successMessage?: string
@@ -28,11 +33,13 @@ export const getRouter = () => {
 		mutationCache: new MutationCache({
 			async onMutate(_variables, mutation) {
 				if (mutation.meta?.updateQueryData) {
-					for (const item of mutation.meta?.updateQueryData) {
+					for (const item of mutation.meta.updateQueryData) {
 						await queryClient.setQueryData(item.key, item.value ?? _variables)
 					}
 					if (mutation.meta.invalidateQuries) {
-						await queryClient.invalidateQueries({ queryKey: mutation.meta?.invalidateQuries })
+						await queryClient.invalidateQueries({
+							queryKey: mutation.meta?.invalidateQuries,
+						})
 					}
 				}
 			},
@@ -50,7 +57,9 @@ export const getRouter = () => {
 			},
 			async onSettled(_data, _error, _variables, _context, mutation) {
 				if (mutation.meta?.invalidateQuries) {
-					await queryClient.invalidateQueries({ queryKey: mutation.meta?.invalidateQuries })
+					await queryClient.invalidateQueries({
+						queryKey: mutation.meta?.invalidateQuries,
+					})
 				}
 			},
 		}),
@@ -62,7 +71,11 @@ export const getRouter = () => {
 		defaultNotFoundComponent: () => <div>Page Not Found</div>,
 		defaultPreload: 'intent',
 		Wrap: (props: { children: React.ReactNode }) => {
-			return <QueryClientProvider client={queryClient}>{props.children}</QueryClientProvider>
+			return (
+				<QueryClientProvider client={queryClient}>
+					{props.children}
+				</QueryClientProvider>
+			)
 		},
 	})
 

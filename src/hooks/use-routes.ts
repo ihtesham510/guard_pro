@@ -129,7 +129,8 @@ export function useRoutes() {
 				},
 				{
 					title: 'Payrolls',
-					description: 'Generate and manage payrolls for companies and employees',
+					description:
+						'Generate and manage payrolls for companies and employees',
 					icon: DollarSignIcon,
 					href: {
 						to: '/dashboard/payrolls',

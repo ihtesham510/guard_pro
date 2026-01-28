@@ -9,7 +9,11 @@ export const authClient = createAuthClient({
 export const useAuthentication = () => {
 	const { data } = useSuspenseQuery(authQueries.user())
 
-	return { session: data?.session ?? null, user: data?.user ?? null, isAuthenticated: !!data }
+	return {
+		session: data?.session ?? null,
+		user: data?.user ?? null,
+		isAuthenticated: !!data,
+	}
 }
 
 export const useUser = () => {

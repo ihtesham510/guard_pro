@@ -1,11 +1,11 @@
 import { createServerFn, json } from '@tanstack/react-start'
-import { userRequiredMiddleware } from '@/services/auth.api'
-import { companyInsertSchemaWithAddress } from './company.schema'
+import { and, eq } from 'drizzle-orm'
+import z from 'zod'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
-import { eq, and } from 'drizzle-orm'
-import z from 'zod'
-import { addAddress, updateAddress } from './address.api'
+import { addAddress, updateAddress } from '@/services/address.api'
+import { userRequiredMiddleware } from '@/services/auth.api'
+import { companyInsertSchemaWithAddress } from '@/services/company.schema'
 
 export const addCompany = createServerFn({ method: 'POST' })
 	.middleware([userRequiredMiddleware])
@@ -21,7 +21,10 @@ export const addCompany = createServerFn({ method: 'POST' })
 export const getCompanies = createServerFn({ method: 'GET' })
 	.middleware([userRequiredMiddleware])
 	.handler(async ({ context: { userId } }) => {
-		return await db.select().from(schema.company).where(eq(schema.company.userId, userId))
+		return await db
+			.select()
+			.from(schema.company)
+			.where(eq(schema.company.userId, userId))
 	})
 
 export const getCompaniesWithAddress = createServerFn({ method: 'GET' })
@@ -91,10 +94,17 @@ export const updateCompany = createServerFn({ method: 'POST' })
 			await updateAddress({ id: company.address, data: address })
 		} else if (address) {
 			const addressId = await addAddress(address)
-			await db.update(schema.company).set({ address: addressId }).where(eq(schema.company.id, id))
+			await db
+				.update(schema.company)
+				.set({ address: addressId })
+				.where(eq(schema.company.id, id))
 		}
 
-		return await db.update(schema.company).set(companyData).where(eq(schema.company.id, id)).returning()
+		return await db
+			.update(schema.company)
+			.set(companyData)
+			.where(eq(schema.company.id, id))
+			.returning()
 	})
 
 export const deleteCompany = createServerFn({ method: 'POST' })

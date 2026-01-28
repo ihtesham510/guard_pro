@@ -1,10 +1,17 @@
 import { DashboardTitle } from '@/components/dashboard/dashboard-title'
 import { EmployeesDataTable } from '@/components/dashboard/employees/data-table'
 import { Button } from '@/components/ui/button'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from '@/components/ui/empty'
 import { Spinner } from '@/components/ui/spinner'
 import { useAppState } from '@/context/app-context'
-import { EmployeeSelectSchema } from '@/services/employee.schema'
+import type { EmployeeSelectSchema } from '@/services/employee.schema'
 import { employeeQuries } from '@/services/queries'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
@@ -43,11 +50,14 @@ function RouteComponent({ data }: { data: EmployeeSelectSchema[] }) {
 					</EmptyMedia>
 					<EmptyTitle>No Guards Yet</EmptyTitle>
 					<EmptyDescription>
-						You haven't added any guard yet. Get Started by adding guards for you're company.
+						You haven't added any guard yet. Get Started by adding guards for
+						you're company.
 					</EmptyDescription>
 				</EmptyHeader>
 				<EmptyContent>
-					<Button onClick={() => dialogs.open('add-employee')}>Add Guard</Button>
+					<Button onClick={() => dialogs.open('add-employee')}>
+						Add Guard
+					</Button>
 				</EmptyContent>
 			</Empty>
 		)

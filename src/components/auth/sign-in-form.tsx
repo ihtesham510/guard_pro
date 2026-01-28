@@ -3,7 +3,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { GalleryVerticalEnd, LoaderCircle } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { authClient } from '@/lib/auth-client'
@@ -44,7 +51,10 @@ export function SignInForm() {
 				<form className='max-w-lg' onSubmit={form.handleSubmit(onSubmit)}>
 					<div className='flex flex-col gap-6'>
 						<div className='flex flex-col items-center gap-2'>
-							<Link to='/' className='flex flex-col items-center gap-2 font-medium'>
+							<Link
+								to='/'
+								className='flex flex-col items-center gap-2 font-medium'
+							>
 								<div className='flex size-8 items-center justify-center rounded-md'>
 									<GalleryVerticalEnd className='size-6' />
 								</div>
@@ -90,12 +100,22 @@ export function SignInForm() {
 									)}
 								/>
 							</div>
-							<Button type='submit' className='w-full' disabled={form.formState.isSubmitting}>
-								{form.formState.isSubmitting ? <LoaderCircle className='size-5 animate-spin' /> : 'Log In'}
+							<Button
+								type='submit'
+								className='w-full'
+								disabled={form.formState.isSubmitting}
+							>
+								{form.formState.isSubmitting ? (
+									<LoaderCircle className='size-5 animate-spin' />
+								) : (
+									'Log In'
+								)}
 							</Button>
 						</div>
 						<div className='after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t'>
-							<span className='bg-background text-muted-foreground relative z-10 px-2'>Or</span>
+							<span className='bg-background text-muted-foreground relative z-10 px-2'>
+								Or
+							</span>
 						</div>
 						<SocialLogins />
 					</div>

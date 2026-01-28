@@ -1,10 +1,20 @@
 import { queryOptions } from '@tanstack/react-query'
-import { getUserSession } from './auth.api'
-import { getEmployee, getEmployeeieWithAttendence, getEmployees, getEmployeesWithShifts } from './employee.api'
-import { getCompanies, getCompaniesWithAddress, getCompany, getCompanyWithAddress } from './company.api.ts'
 import { STALE_TIME } from '@/constants.ts'
-import { getSites, getSite, getSiteShifts } from './site.api.ts'
-import { getShifts } from './shift.api.ts'
+import { getUserSession } from '@/services/auth.api'
+import {
+	getCompanies,
+	getCompaniesWithAddress,
+	getCompany,
+	getCompanyWithAddress,
+} from '@/services/company.api.ts'
+import {
+	getEmployee,
+	getEmployeeieWithAttendence,
+	getEmployees,
+	getEmployeesWithShifts,
+} from '@/services/employee.api'
+import { getShifts } from '@/services/shift.api.ts'
+import { getSite, getSiteShifts, getSites } from '@/services/site.api.ts'
 
 export const authQueries = {
 	all: ['auth'],

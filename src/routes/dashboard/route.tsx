@@ -1,6 +1,10 @@
 import { AppSidebar } from '@/components/sidebar'
 import { Button } from '@/components/ui/button'
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import {
+	SidebarInset,
+	SidebarProvider,
+	SidebarTrigger,
+} from '@/components/ui/sidebar'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { Bell } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -57,7 +61,9 @@ function RouteComponent() {
 						<ThemeToggle />
 						<Button variant='ghost' size='sm' className='relative'>
 							<Bell className='h-5 w-5' />
-							<Badge className='absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-primary'>3</Badge>
+							<Badge className='absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-primary'>
+								3
+							</Badge>
 						</Button>
 					</div>
 				</header>

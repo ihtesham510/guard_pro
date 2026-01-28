@@ -17,7 +17,10 @@ export const removeShift = createServerFn({ method: 'POST' })
 	.middleware([userRequiredMiddleware])
 	.inputValidator(z.object({ id: z.string() }))
 	.handler(async ({ data: { id } }) => {
-		return await db.delete(schema.shift).where(eq(schema.shift.id, id)).returning()
+		return await db
+			.delete(schema.shift)
+			.where(eq(schema.shift.id, id))
+			.returning()
 	})
 
 export const getShifts = createServerFn({ method: 'GET' })
@@ -34,7 +37,9 @@ export const getShifts = createServerFn({ method: 'GET' })
 			where: eq(schema.site.userId, userId),
 			with: {
 				shift: {
-					where: data.site_id ? eq(schema.shift.site_id, data.site_id) : undefined,
+					where: data.site_id
+						? eq(schema.shift.site_id, data.site_id)
+						: undefined,
 					with: {
 						site: {
 							with: {
@@ -47,7 +52,9 @@ export const getShifts = createServerFn({ method: 'GET' })
 						shiftIncludeDay: true,
 						shift_assignment: {
 							with: { employee: true },
-							where: data.employee_id ? eq(schema.shift_assignment.employee_id, data.employee_id) : undefined,
+							where: data.employee_id
+								? eq(schema.shift_assignment.employee_id, data.employee_id)
+								: undefined,
 						},
 					},
 				},

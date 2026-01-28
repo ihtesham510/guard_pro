@@ -1,4 +1,4 @@
-import { SiteSelectSchemaWithAddress } from '@/services/site.schema'
+import type { SiteSelectSchemaWithAddress } from '@/services/site.schema'
 import { TrailCard } from '@/components/ui/trail-card'
 import { Button } from '@/components/ui/button'
 import {
@@ -70,7 +70,8 @@ export function SiteCardView({ data }: SiteCardViewProps) {
 				const firstPicture = getFirstPicture(site)
 				const secondPicture = getSecondPicture(site)
 				const imageUrl = firstPicture?.url ?? undefined
-				const mapImageUrl = secondPicture?.url ?? firstPicture?.url ?? placeholderImage
+				const mapImageUrl =
+					secondPicture?.url ?? firstPicture?.url ?? placeholderImage
 
 				return (
 					<div key={site.id} className='relative min-w-full'>
@@ -90,16 +91,28 @@ export function SiteCardView({ data }: SiteCardViewProps) {
 						<div className='absolute top-2 right-2 z-10'>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant='ghost' size='icon' className='h-8 w-8 bg-background/80 backdrop-blur-sm'>
+									<Button
+										variant='ghost'
+										size='icon'
+										className='h-8 w-8 bg-background/80 backdrop-blur-sm'
+									>
 										<span className='sr-only'>Open menu</span>
 										<MoreHorizontal className='h-4 w-4' />
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align='end'>
 									<DropdownMenuLabel>Actions</DropdownMenuLabel>
-									<DropdownMenuItem onClick={() => navigator.clipboard.writeText(site.id)}>Copy id</DropdownMenuItem>
-									<DropdownMenuItem onClick={() => handleEdit(site)}>Edit</DropdownMenuItem>
-									<DropdownMenuItem onClick={() => handleDelete(site)}>Delete</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={() => navigator.clipboard.writeText(site.id)}
+									>
+										Copy id
+									</DropdownMenuItem>
+									<DropdownMenuItem onClick={() => handleEdit(site)}>
+										Edit
+									</DropdownMenuItem>
+									<DropdownMenuItem onClick={() => handleDelete(site)}>
+										Delete
+									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</div>

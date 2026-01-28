@@ -1,7 +1,8 @@
-import React, { PropsWithChildren } from 'react'
-import { TrendingUp, TrendingDown, LucideIcon } from 'lucide-react'
+import { type LucideIcon, TrendingDown, TrendingUp } from 'lucide-react'
+import type React from 'react'
+import type { PropsWithChildren } from 'react'
+import { AnimatedText } from '@/components/ui/animated-text'
 import { cn } from '@/lib/utils'
-import { AnimatedText } from './animated-text'
 
 const cardVariants = {
 	outline: 'border text-card-foreground rounded-lg p-6 shadow-sm',
@@ -13,8 +14,15 @@ const trendVariants = {
 	down: 'text-red-600 dark:text-red-500 bg-red-600/10 dark:bg-red-500/10',
 }
 
-export function OverViewCardGroup({ children, className }: PropsWithChildren & { className?: string }) {
-	return <div className={cn('grid gap-4 md:grid-cols-2 lg:grid-cols-3', className)}>{children}</div>
+export function OverViewCardGroup({
+	children,
+	className,
+}: PropsWithChildren & { className?: string }) {
+	return (
+		<div className={cn('grid gap-4 md:grid-cols-2 lg:grid-cols-3', className)}>
+			{children}
+		</div>
+	)
 }
 
 export function OverViewCard({
@@ -28,8 +36,15 @@ export function OverViewCard({
 	return <div className={cn(cardVariants[variant], className)}>{children}</div>
 }
 
-OverViewCard.Header = function OverviewCardHeader({ children, className }: PropsWithChildren & { className?: string }) {
-	return <div className={cn('flex items-center justify-between mb-4', className)}>{children}</div>
+OverViewCard.Header = function OverviewCardHeader({
+	children,
+	className,
+}: PropsWithChildren & { className?: string }) {
+	return (
+		<div className={cn('flex items-center justify-between mb-4', className)}>
+			{children}
+		</div>
+	)
 }
 
 OverViewCard.Title = function OverviewCardTitle({
@@ -60,7 +75,11 @@ OverViewCard.Trend = function OverviewCardTrend({
 
 	return (
 		<div
-			className={cn('flex items-center gap-1 px-2 py-1 rounded text-xs font-medium', trendVariants[trend], className)}
+			className={cn(
+				'flex items-center gap-1 px-2 py-1 rounded text-xs font-medium',
+				trendVariants[trend],
+				className,
+			)}
 		>
 			<Icon className='w-3 h-3' />
 			<span>{children}</span>
@@ -68,7 +87,13 @@ OverViewCard.Trend = function OverviewCardTrend({
 	)
 }
 
-OverViewCard.Value = function OverviewCardValue({ value, className }: { className?: string; value: string | number }) {
+OverViewCard.Value = function OverviewCardValue({
+	value,
+	className,
+}: {
+	className?: string
+	value: string | number
+}) {
 	return (
 		<AnimatedText
 			className={cn('text-3xl font-bold text-foreground', className)}
@@ -89,7 +114,12 @@ OverViewCard.Subtitle = function OverviewCardSubtitle({
 	icon?: LucideIcon
 }) {
 	return (
-		<div className={cn('flex items-center gap-2 mt-2 text-sm text-muted-foreground', className)}>
+		<div
+			className={cn(
+				'flex items-center gap-2 mt-2 text-sm text-muted-foreground',
+				className,
+			)}
+		>
 			{Icon && <Icon className='w-4 h-4' />}
 			<span>{children}</span>
 		</div>
@@ -102,7 +132,11 @@ OverViewCard.Description = function OverviewCardDescription({
 }: PropsWithChildren & {
 	className?: string
 }) {
-	return <p className={cn('text-sm mt-1 text-muted-foreground', className)}>{children}</p>
+	return (
+		<p className={cn('text-sm mt-1 text-muted-foreground', className)}>
+			{children}
+		</p>
+	)
 }
 
 OverViewCard.Footer = function OverviewCardFooter({
@@ -111,7 +145,11 @@ OverViewCard.Footer = function OverviewCardFooter({
 }: PropsWithChildren & {
 	className?: string
 }) {
-	return <div className={cn('text-xs mt-4 text-muted-foreground', className)}>{children}</div>
+	return (
+		<div className={cn('text-xs mt-4 text-muted-foreground', className)}>
+			{children}
+		</div>
+	)
 }
 
 OverViewCard.Badge = function OverviewCardBadge({
@@ -124,14 +162,20 @@ OverViewCard.Badge = function OverviewCardBadge({
 }) {
 	const variants = {
 		default: 'bg-secondary text-secondary-foreground',
-		success: 'bg-green-600/10 text-green-600 dark:bg-green-500/10 dark:text-green-500',
-		warning: 'bg-yellow-600/10 text-yellow-600 dark:bg-yellow-500/10 dark:text-yellow-500',
+		success:
+			'bg-green-600/10 text-green-600 dark:bg-green-500/10 dark:text-green-500',
+		warning:
+			'bg-yellow-600/10 text-yellow-600 dark:bg-yellow-500/10 dark:text-yellow-500',
 		danger: 'bg-destructive/10 text-destructive',
 	}
 
 	return (
 		<span
-			className={cn('inline-flex items-center px-2 py-1 rounded text-xs font-medium', variants[variant], className)}
+			className={cn(
+				'inline-flex items-center px-2 py-1 rounded text-xs font-medium',
+				variants[variant],
+				className,
+			)}
 		>
 			{children}
 		</span>

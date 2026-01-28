@@ -11,20 +11,38 @@ import {
 	subMonths,
 	subWeeks,
 } from 'date-fns'
-import React, { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo, useState } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from './popover'
-import { ButtonGroup } from './button-group'
-import { Button } from './button'
+import {
+	CalendarIcon,
+	ChevronDownIcon,
+	ChevronLeft,
+	ChevronRight,
+} from 'lucide-react'
+import type React from 'react'
+import {
+	createContext,
+	type Dispatch,
+	type PropsWithChildren,
+	type SetStateAction,
+	useContext,
+	useMemo,
+	useState,
+} from 'react'
+import { Button } from '@/components/ui/button'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Calendar as CalendarComp } from '@/components/ui/calendar'
 import {
 	DropdownMenu,
-	DropdownMenuTrigger,
+	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
-	DropdownMenuCheckboxItem,
-} from './dropdown-menu'
-import { ChevronLeft, CalendarIcon, ChevronRight, ChevronDownIcon } from 'lucide-react'
-import { Calendar as CalendarComp } from '@/components/ui/calendar'
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
 type View = 'weekly' | 'monthly'
@@ -72,7 +90,10 @@ export function useCalendarContext() {
 	return ctx
 }
 
-export function CalendarHeader({ children, ...rest }: PropsWithChildren & React.ComponentProps<'div'>) {
+export function CalendarHeader({
+	children,
+	...rest
+}: PropsWithChildren & React.ComponentProps<'div'>) {
 	return (
 		<div {...rest} className={cn('flex flex-col gap-2 mb-4', rest.className)}>
 			{children}
@@ -97,11 +118,17 @@ export function CalendarTitle() {
 						</div>
 					</PopoverTrigger>
 					<PopoverContent className='p-0 flex items-center justify-center'>
-						<CalendarComp mode='single' selected={date} onSelect={val => val && setDate(val)} />
+						<CalendarComp
+							mode='single'
+							selected={date}
+							onSelect={val => val && setDate(val)}
+						/>
 					</PopoverContent>
 				</Popover>
 				<span>
-					<h2 className='text-2xl font-bold'>{date.toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
+					<h2 className='text-2xl font-bold'>
+						{date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+					</h2>
 					<p className='text-sm font-medium text-muted-foreground'>{`${format(view === 'weekly' ? startOfWeek(date) : startOfMonth(date), 'MMM dd')} - ${format(view === 'weekly' ? endOfWeek(date) : endOfMonth(date), 'MMM dd, yyy')}`}</p>
 				</span>
 			</span>
@@ -130,7 +157,11 @@ export function CalendarControlls() {
 		<div className='flex justify-between items-center space-x-2 w-full md:w-auto'>
 			<ButtonGroup>
 				<Button
-					onClick={() => (viewMode === 'weekly' ? navigateWeeks('prev') : navigateMonths('prev'))}
+					onClick={() =>
+						viewMode === 'weekly'
+							? navigateWeeks('prev')
+							: navigateMonths('prev')
+					}
 					variant='outline'
 					size='icon'
 					className='h-8 w-8'
@@ -138,7 +169,11 @@ export function CalendarControlls() {
 					<ChevronLeft className='h-4 w-4' />
 				</Button>
 				<Button
-					onClick={() => (viewMode === 'weekly' ? navigateWeeks('today') : navigateMonths('today'))}
+					onClick={() =>
+						viewMode === 'weekly'
+							? navigateWeeks('today')
+							: navigateMonths('today')
+					}
 					variant='outline'
 					size='sm'
 					className='flex items-center gap-1'
@@ -147,7 +182,11 @@ export function CalendarControlls() {
 					Today
 				</Button>
 				<Button
-					onClick={() => (viewMode === 'weekly' ? navigateWeeks('next') : navigateMonths('next'))}
+					onClick={() =>
+						viewMode === 'weekly'
+							? navigateWeeks('next')
+							: navigateMonths('next')
+					}
 					variant='outline'
 					size='icon'
 					className='h-8 w-8'
@@ -194,10 +233,22 @@ interface CalendarModelProps<T> {
 	events?: T[]
 	getEventsForDay?: (day: Date) => T[]
 	renderWeeklyEvent?: (event: T, day: Date) => React.ReactNode
-	renderWeeklyEventRow?: (event: T, weekDays: Date[], selectedDate: Date) => React.ReactNode
-	renderMonthlyEvent?: (event: T, day: Date, isCurrentMonth: boolean) => React.ReactNode
+	renderWeeklyEventRow?: (
+		event: T,
+		weekDays: Date[],
+		selectedDate: Date,
+	) => React.ReactNode
+	renderMonthlyEvent?: (
+		event: T,
+		day: Date,
+		isCurrentMonth: boolean,
+	) => React.ReactNode
 	renderWeeklyDay?: (day: Date, events: T[]) => React.ReactNode
-	renderMonthlyDay?: (day: Date, events: T[], isCurrentMonth: boolean) => React.ReactNode
+	renderMonthlyDay?: (
+		day: Date,
+		events: T[],
+		isCurrentMonth: boolean,
+	) => React.ReactNode
 }
 
 export function CalendarModel<T>({
@@ -232,11 +283,14 @@ export function CalendarModel<T>({
 									key={day.toISOString()}
 									className={cn(
 										'p-4 md:p-5 lg:p-3 xl:p-4 cursor-pointer text-center border-r last:border-r-0 hover:bg-primary/5',
-										isSameDay(date, day) && 'bg-primary/5 border-primary border-l border-r border-t rounded-t-sm',
+										isSameDay(date, day) &&
+											'bg-primary/5 border-primary border-l border-r border-t rounded-t-sm',
 									)}
 									onClick={() => setDate(day)}
 								>
-									<p className='text-xs md:text-sm text-muted-foreground uppercase'>{format(day, 'EEE')}</p>
+									<p className='text-xs md:text-sm text-muted-foreground uppercase'>
+										{format(day, 'EEE')}
+									</p>
 									<p
 										className={cn(
 											'text-xl md:text-2xl lg:text-lg xl:text-xl font-semibold mt-1',
@@ -253,18 +307,26 @@ export function CalendarModel<T>({
 
 					<div className='divide-y'>
 						{events.length > 0 && renderWeeklyEventRow ? (
-							events.map((event, index) => <div key={index}>{renderWeeklyEventRow(event, weekDays, date)}</div>)
+							events.map((event, index) => (
+								<div key={index}>
+									{renderWeeklyEventRow(event, weekDays, date)}
+								</div>
+							))
 						) : events.length > 0 && renderWeeklyEvent ? (
 							events.map((event, index) => {
 								return (
-									<div key={index} className='grid grid-cols-7 min-w-[1000px] w-full lg:min-w-0 lg:w-full'>
+									<div
+										key={index}
+										className='grid grid-cols-7 min-w-[1000px] w-full lg:min-w-0 lg:w-full'
+									>
 										{weekDays.map(day => {
 											return (
 												<div
 													key={day.toISOString()}
 													className={cn(
 														'min-h-[140px] md:min-h-[160px] lg:min-h-[120px] xl:min-h-[140px] p-0 border-r last:border-r-0',
-														isSameDay(date, day) && 'border-primary border-l border-r bg-primary/5',
+														isSameDay(date, day) &&
+															'border-primary border-l border-r bg-primary/5',
 													)}
 												>
 													{renderWeeklyEvent(event, day)}
@@ -283,7 +345,8 @@ export function CalendarModel<T>({
 											key={day.toISOString()}
 											className={cn(
 												'min-h-[140px] md:min-h-[160px] lg:min-h-[120px] xl:min-h-[140px] p-0 border-r last:border-r-0',
-												isSameDay(date, day) && 'border-primary border-l border-r bg-primary/5',
+												isSameDay(date, day) &&
+													'border-primary border-l border-r bg-primary/5',
 											)}
 										>
 											{renderWeeklyDay(day, dayEvents)}
@@ -298,7 +361,8 @@ export function CalendarModel<T>({
 										key={day.toISOString()}
 										className={cn(
 											'min-h-[140px] md:min-h-[160px] lg:min-h-[120px] xl:min-h-[140px] p-0 border-r last:border-r-0 flex justify-center items-center font-normal text-muted-foreground',
-											isSameDay(date, day) && 'border-primary border-l border-r bg-primary/5',
+											isSameDay(date, day) &&
+												'border-primary border-l border-r bg-primary/5',
 										)}
 									>
 										-
@@ -322,7 +386,10 @@ export function CalendarModel<T>({
 		return (
 			<div className='grid grid-cols-7 gap-1'>
 				{DAYS.map(day => (
-					<div key={day} className='text-center font-medium text-muted-foreground text-sm py-2'>
+					<div
+						key={day}
+						className='text-center font-medium text-muted-foreground text-sm py-2'
+					>
 						{day}
 					</div>
 				))}
@@ -357,10 +424,20 @@ export function CalendarModel<T>({
 
 								<div className='grid space-y-1'>
 									{renderMonthlyDay
-										? renderMonthlyDay(cell.date, dayEvents, cell.isCurrentMonth)
+										? renderMonthlyDay(
+												cell.date,
+												dayEvents,
+												cell.isCurrentMonth,
+											)
 										: dayEvents.map((event, eventIndex) =>
 												renderMonthlyEvent ? (
-													<div key={eventIndex}>{renderMonthlyEvent(event, cell.date, cell.isCurrentMonth)}</div>
+													<div key={eventIndex}>
+														{renderMonthlyEvent(
+															event,
+															cell.date,
+															cell.isCurrentMonth,
+														)}
+													</div>
 												) : null,
 											)}
 								</div>
@@ -390,7 +467,11 @@ const generateCalendar = (currentDate: Date): CalendarCell[][] => {
 		const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate()
 		for (let i = 0; i < firstDayOfMonth; i++) {
 			week.push({
-				date: new Date(prevYear, prevMonth, daysInPrevMonth - firstDayOfMonth + 1 + i),
+				date: new Date(
+					prevYear,
+					prevMonth,
+					daysInPrevMonth - firstDayOfMonth + 1 + i,
+				),
 				isCurrentMonth: false,
 			})
 		}
@@ -409,7 +490,10 @@ const generateCalendar = (currentDate: Date): CalendarCell[][] => {
 		const nextYear = month === 11 ? year + 1 : year
 		let d = 1
 		while (week.length < 7) {
-			week.push({ date: new Date(nextYear, nextMonth, d++), isCurrentMonth: false })
+			week.push({
+				date: new Date(nextYear, nextMonth, d++),
+				isCurrentMonth: false,
+			})
 		}
 		weeks.push(week)
 	}

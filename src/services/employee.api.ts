@@ -1,11 +1,11 @@
 import { createServerFn } from '@tanstack/react-start'
-import { userRequiredMiddleware } from '@/services/auth.api'
-import { employeInsertSchemaWithAddress } from './employee.schema'
-import { db } from '@/db'
-import { eq, and } from 'drizzle-orm'
-import * as schema from '@/db/schema'
+import { and, eq } from 'drizzle-orm'
 import z from 'zod'
-import { addAddress, updateAddress } from './address.api'
+import { db } from '@/db'
+import * as schema from '@/db/schema'
+import { addAddress, updateAddress } from '@/services/address.api'
+import { userRequiredMiddleware } from '@/services/auth.api'
+import { employeInsertSchemaWithAddress } from '@/services/employee.schema'
 
 export const addEmployee = createServerFn({ method: 'POST' })
 	.middleware([userRequiredMiddleware])
@@ -31,7 +31,10 @@ export const getEmployee = createServerFn({ method: 'GET' })
 	.inputValidator(z.object({ id: z.string() }))
 	.handler(async ({ data: { id }, context: { userSession } }) => {
 		return await db.query.employee.findFirst({
-			where: and(eq(schema.employee.id, id), eq(schema.employee.userId, userSession.user.id)),
+			where: and(
+				eq(schema.employee.id, id),
+				eq(schema.employee.userId, userSession.user.id),
+			),
 			with: {
 				address: true,
 			},
@@ -70,7 +73,10 @@ export const updateEmployee = createServerFn({ method: 'POST' })
 	)
 	.handler(async ({ data: { id, data }, context: { userSession } }) => {
 		const employee = await db.query.employee.findFirst({
-			where: and(eq(schema.employee.id, id), eq(schema.employee.userId, userSession.user.id)),
+			where: and(
+				eq(schema.employee.id, id),
+				eq(schema.employee.userId, userSession.user.id),
+			),
 		})
 
 		if (!employee) {
@@ -83,10 +89,17 @@ export const updateEmployee = createServerFn({ method: 'POST' })
 			await updateAddress({ id: employee.address, data: address })
 		} else if (address) {
 			const addressId = await addAddress(address)
-			await db.update(schema.employee).set({ address: addressId }).where(eq(schema.employee.id, id))
+			await db
+				.update(schema.employee)
+				.set({ address: addressId })
+				.where(eq(schema.employee.id, id))
 		}
 
-		return await db.update(schema.employee).set(employeeData).where(eq(schema.employee.id, id)).returning()
+		return await db
+			.update(schema.employee)
+			.set(employeeData)
+			.where(eq(schema.employee.id, id))
+			.returning()
 	})
 
 export const deleteEmployee = createServerFn({ method: 'POST' })
@@ -95,7 +108,12 @@ export const deleteEmployee = createServerFn({ method: 'POST' })
 	.handler(async ({ data: { id }, context: { userSession } }) => {
 		return await db
 			.delete(schema.employee)
-			.where(and(eq(schema.employee.id, id), eq(schema.employee.userId, userSession.user.id)))
+			.where(
+				and(
+					eq(schema.employee.id, id),
+					eq(schema.employee.userId, userSession.user.id),
+				),
+			)
 			.returning()
 	})
 
@@ -118,6 +136,11 @@ export const getEmployeesWithShifts = createServerFn({ method: 'GET' })
 				},
 			})
 		).map(emp => {
-			return { ...emp, shift_assignment: emp.shift_assignment.filter(assignment => !assignment.shift.terminated) }
+			return {
+				...emp,
+				shift_assignment: emp.shift_assignment.filter(
+					assignment => !assignment.shift.terminated,
+				),
+			}
 		})
 	})

@@ -1,1 +1,3 @@
-bun run build 
+bunx biome lint  
+bun build 
+bunx biome format

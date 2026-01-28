@@ -4,6 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev --port 3000",
+		"lint": "biome lint && bunx tsc",
 		"start": "node .output/server/index.mjs",
 		"build": "vite build && tsc",
 		"serve": "vite preview",
@@ -13,6 +14,9 @@
 		"db:push": "bun run db:generate && bun run db:migrate",
 		"db:pull": "drizzle-kit pull",
 		"db:studio": "drizzle-kit studio",
+		"format": "biome format",
+		"format-staged": "biome format --staged",
+		"format-apply": "biome format --write",
 		"prepare": "husky"
 	},
 	"dependencies": {

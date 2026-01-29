@@ -18,6 +18,7 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int activeIndex = navigationShell.currentIndex;
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: Container(
@@ -29,19 +30,34 @@ class Dashboard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12),
             child: GNav(
-              color: Colors.white,
+              color: AppTheme.mutedForeground,
               backgroundColor: Colors.transparent,
               activeColor: AppTheme.primary,
-              tabBackgroundColor: AppTheme.muted.withValues(alpha: 1),
               gap: 8,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               selectedIndex: navigationShell.currentIndex,
               onTabChange: _onTap,
-              tabs: const [
-                GButton(icon: FluentIcons.home_16_regular, text: 'Home'),
-                GButton(icon: FluentIcons.clock_16_regular, text: 'Shifts'),
-                GButton(icon: FluentIcons.money_16_regular, text: 'Payments'),
-                GButton(icon: FluentIcons.person_16_regular, text: 'You'),
+              tabs: [
+                GButton(
+                  icon: activeIndex == 0
+                      ? FluentIcons.home_16_filled
+                      : FluentIcons.home_16_regular,
+                ),
+                GButton(
+                  icon: activeIndex == 1
+                      ? FluentIcons.clock_16_filled
+                      : FluentIcons.clock_16_regular,
+                ),
+                GButton(
+                  icon: activeIndex == 2
+                      ? FluentIcons.money_16_filled
+                      : FluentIcons.money_16_regular,
+                ),
+                GButton(
+                  icon: activeIndex == 3
+                      ? FluentIcons.person_16_filled
+                      : FluentIcons.person_16_regular,
+                ),
               ],
             ),
           ),

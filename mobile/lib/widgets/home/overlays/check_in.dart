@@ -29,7 +29,7 @@ class CheckInOverlay extends StatelessWidget {
         leading: IconButton(icon: const Icon(Icons.close), onPressed: onClose),
         elevation: 0,
         backgroundColor: AppTheme.card,
-        foregroundColor: AppTheme.foreground,
+        foregroundColor: AppTheme.cardForeground,
       ),
       backgroundColor: AppTheme.card,
       body: Padding(

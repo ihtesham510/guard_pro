@@ -219,15 +219,15 @@ class _MonthlyState extends State<Monthly> {
                     titleTextStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.foreground,
+                      color: AppTheme.cardForeground,
                     ),
                     leftChevronIcon: Icon(
                       FluentIcons.chevron_left_24_regular,
-                      color: AppTheme.foreground,
+                      color: AppTheme.cardForeground,
                     ),
                     rightChevronIcon: Icon(
                       FluentIcons.chevron_right_24_regular,
-                      color: AppTheme.foreground,
+                      color: AppTheme.cardForeground,
                     ),
                   ),
                   daysOfWeekStyle: DaysOfWeekStyle(
@@ -247,11 +247,11 @@ class _MonthlyState extends State<Monthly> {
                     cellPadding: const EdgeInsets.all(4),
                     defaultTextStyle: TextStyle(
                       fontSize: 14,
-                      color: AppTheme.foreground,
+                      color: AppTheme.cardForeground,
                     ),
                     weekendTextStyle: TextStyle(
                       fontSize: 14,
-                      color: AppTheme.foreground,
+                      color: AppTheme.cardForeground,
                     ),
                     selectedDecoration: BoxDecoration(
                       color: AppTheme.primary,
@@ -267,7 +267,7 @@ class _MonthlyState extends State<Monthly> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     todayTextStyle: TextStyle(
-                      color: AppTheme.foreground,
+                      color: AppTheme.cardForeground,
                       fontWeight: FontWeight.bold,
                     ),
                     outsideTextStyle: TextStyle(

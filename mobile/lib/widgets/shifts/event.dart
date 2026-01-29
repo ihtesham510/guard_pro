@@ -67,7 +67,7 @@ class EventCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.foreground,
+                      color: AppTheme.cardForeground,
                     ),
                   ),
                   SizedBox(height: 4),

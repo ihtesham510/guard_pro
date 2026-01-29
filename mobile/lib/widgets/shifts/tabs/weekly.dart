@@ -248,7 +248,7 @@ class _WeeklyState extends State<Weekly> {
                       ),
                       child: Icon(
                         FluentIcons.chevron_left_24_regular,
-                        color: AppTheme.foreground,
+                        color: AppTheme.cardForeground,
                         size: 20,
                       ),
                     ),
@@ -272,7 +272,7 @@ class _WeeklyState extends State<Weekly> {
                       ),
                       child: Icon(
                         FluentIcons.chevron_right_24_regular,
-                        color: AppTheme.foreground,
+                        color: AppTheme.cardForeground,
                         size: 20,
                       ),
                     ),
@@ -335,7 +335,7 @@ class _WeeklyState extends State<Weekly> {
                                 fontSize: 18,
                                 color: isSameDate
                                     ? AppTheme.primary
-                                    : AppTheme.foreground,
+                                    : AppTheme.cardForeground,
                               ),
                             ),
                             SizedBox(height: 6),
@@ -493,7 +493,7 @@ class _WeeklyState extends State<Weekly> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  color: AppTheme.foreground,
+                                  color: AppTheme.cardForeground,
                                 ),
                               ),
                               SizedBox(height: 2),
@@ -567,7 +567,7 @@ class _WeeklyState extends State<Weekly> {
                 value,
                 style: TextStyle(
                   fontSize: 14,
-                  color: AppTheme.foreground,
+                  color: AppTheme.cardForeground,
                   fontWeight: FontWeight.w500,
                 ),
                 maxLines: 2,

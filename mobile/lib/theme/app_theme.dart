@@ -2,44 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const Color background = Color(0xFF1E1E1E);
+  static const Color background = Color(0xFFF2F3F4);
 
-  static const Color foreground = Color(0xFFCFCFCF);
+  static const Color foreground = Color(0xFF1C1C1C);
 
-  static const Color card = Color(0xFF2E2E2E);
+  static const Color card = Color(0xFFFFFFFF);
+
+  static const Color cardForeground = Color(0xFF1C1C1C);
 
   static const Color primary = Color(0xFFFF8C00);
 
   static const Color primaryForeground = Color(0xFF000000);
 
-  static const Color secondary = Color(0xFFFFB400);
+  static const Color secondary = Color(0xFFFFC107);
 
-  static const Color border = Color(0xFF404040);
+  static const Color border = Color(0xFFE0E0E0);
 
-  static const Color muted = Color(0xFF404040);
+  static const Color muted = Color(0xFFE0E0E0);
 
-  static const Color mutedForeground = Color(0xFFA0A0A0);
+  static const Color mutedForeground = Color(0xFF757575);
 
-  static const Color accent = Color(0xFF525252);
+  static const Color accent = Color(0xFFBDBDBD);
 
   static const Color destructive = Color(0xFFEF4444);
 
-  static const Color ring = Color(0xFFFFB84D);
+  static const Color ring = Color(0xFFFFC107);
 
   static ThemeData get darkTheme {
     const borderRadius = 12.0;
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
-      colorScheme: const ColorScheme.dark(
+      brightness: Brightness.light,
+      colorScheme: const ColorScheme.light(
         primary: primary,
         onPrimaryContainer: primaryForeground,
         secondary: secondary,
         surface: card,
         error: destructive,
-        onPrimary: background,
-        onSecondary: background,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
         onSurface: foreground,
         onError: Colors.white,
         outline: border,
@@ -55,7 +57,7 @@ class AppTheme {
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        fillColor: background,
+        fillColor: card,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: const BorderSide(color: border, width: 1),
@@ -82,7 +84,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
-          foregroundColor: background,
+          foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
@@ -120,7 +122,7 @@ class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: card,
-        contentTextStyle: const TextStyle(color: foreground),
+        contentTextStyle: const TextStyle(color: cardForeground),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
         ),

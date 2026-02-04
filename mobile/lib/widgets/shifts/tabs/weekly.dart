@@ -1,7 +1,9 @@
 import 'package:date_kit/date_kit.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/theme/app_theme.dart';
+import 'package:mobile/widgets/common/date_selector.dart';
 
 class Weekly extends StatefulWidget {
   final List<Map<String, dynamic>> shifts;
@@ -228,151 +230,97 @@ class _WeeklyState extends State<Weekly> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            // Week Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              Text(
+                format(selectedDay, 'EEEE, MMMM d'),
+                style: GoogleFonts.inter(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.foreground,
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: _previousWeek,
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppTheme.card,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppTheme.border),
-                      ),
-                      child: Icon(
-                        FluentIcons.chevron_left_24_regular,
-                        color: AppTheme.cardForeground,
-                        size: 20,
-                      ),
-                    ),
-                  ),
                   Text(
                     weekRange,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.foreground,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: _nextWeek,
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppTheme.card,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppTheme.border),
+                  Row(
+                    spacing: 8,
+                    children: [
+                      GestureDetector(
+                        onTap: _previousWeek,
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppTheme.card,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            FluentIcons.chevron_left_24_regular,
+                            color: AppTheme.cardForeground,
+                            size: 16,
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        FluentIcons.chevron_right_24_regular,
-                        color: AppTheme.cardForeground,
-                        size: 20,
+                      GestureDetector(
+                        onTap: _nextWeek,
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppTheme.card,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            FluentIcons.chevron_right_24_regular,
+                            color: AppTheme.cardForeground,
+                            size: 16,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                height: 80,
+              SizedBox(height: 20),
+              SizedBox(
+                height: 95,
                 child: ListView.builder(
                   itemBuilder: (context, index) {
                     final day = weekIntervals[index];
                     final isSameDate = isSameDay(day, selectedDay);
-                    final isToday = isSameDay(day, DateTime.now());
                     final events = _getEventsForDay(day);
                     final hasEvents = events > 0;
-                    final displayEvents = events > 3 ? 3 : events;
 
-                    return GestureDetector(
+                    return DateSelector(
+                      active: isSameDate,
+                      day: day,
+                      hasEvent: hasEvents,
                       onTap: () {
                         _onDaySelected(day);
                       },
-                      child: Container(
-                        width: 64,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        decoration: BoxDecoration(
-                          color: AppTheme.card,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            width: isToday ? 2 : 1,
-                            color: isSameDate
-                                ? AppTheme.primary
-                                : isToday
-                                ? AppTheme.primary.withValues(alpha: 0.3)
-                                : AppTheme.border,
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              format(day, 'EEE'),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 11,
-                                color: isSameDate
-                                    ? AppTheme.primary
-                                    : AppTheme.mutedForeground,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              format(day, 'd'),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 18,
-                                color: isSameDate
-                                    ? AppTheme.primary
-                                    : AppTheme.cardForeground,
-                              ),
-                            ),
-                            SizedBox(height: 6),
-                            if (hasEvents)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(displayEvents, (idx) {
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(horizontal: 2),
-                                    height: 5,
-                                    width: 5,
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.primary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  );
-                                }),
-                              )
-                            else
-                              SizedBox(height: 5),
-                          ],
-                        ),
-                      ),
                     );
                   },
                   itemCount: weekIntervals.length,
                   scrollDirection: Axis.horizontal,
                 ),
               ),
-            ),
-            SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _buildEventsList(),
-            ),
-            SizedBox(height: 24),
-          ],
+              SizedBox(height: 24),
+              _buildEventsList(),
+              SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
@@ -384,35 +332,12 @@ class _WeeklyState extends State<Weekly> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          child: Row(
-            children: [
-              Icon(
-                FluentIcons.calendar_ltr_24_regular,
-                size: 18,
-                color: AppTheme.foreground,
-              ),
-              SizedBox(width: 8),
-              Text(
-                format(selectedDay, 'EEEE, MMMM d'),
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.foreground,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 12),
         if (shiftsForDay.isEmpty)
           Container(
             padding: const EdgeInsets.all(40),
             decoration: BoxDecoration(
               color: AppTheme.card,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppTheme.border),
             ),
             child: Center(
               child: Column(
@@ -450,11 +375,10 @@ class _WeeklyState extends State<Weekly> {
             final payRate = shift['pay_rate'];
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: AppTheme.card,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -463,7 +387,6 @@ class _WeeklyState extends State<Weekly> {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppTheme.primary.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12),
@@ -478,7 +401,7 @@ class _WeeklyState extends State<Weekly> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
-                            FluentIcons.calendar_clock_24_regular,
+                            FluentIcons.calendar_clock_24_filled,
                             size: 20,
                             color: AppTheme.primary,
                           ),
@@ -516,13 +439,13 @@ class _WeeklyState extends State<Weekly> {
                     child: Column(
                       children: [
                         _buildDetailRow(
-                          FluentIcons.clock_24_regular,
+                          FluentIcons.clock_24_filled,
                           'Time',
                           '$startTime - $endTime',
                         ),
                         SizedBox(height: 10),
                         _buildDetailRow(
-                          FluentIcons.location_24_regular,
+                          FluentIcons.location_24_filled,
                           'Location',
                           addressText,
                         ),
@@ -548,7 +471,14 @@ class _WeeklyState extends State<Weekly> {
   Widget _buildDetailRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppTheme.mutedForeground),
+        Container(
+          decoration: BoxDecoration(
+            color: AppTheme.background,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: EdgeInsets.all(4),
+          child: Icon(icon, size: 18, color: AppTheme.mutedForeground),
+        ),
         SizedBox(width: 10),
         Expanded(
           child: Column(

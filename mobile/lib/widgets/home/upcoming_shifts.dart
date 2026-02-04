@@ -2,6 +2,7 @@ import 'package:date_kit/date_kit.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/theme/app_theme.dart';
+import 'package:mobile/widgets/common/date_selector.dart';
 
 class UpComingShifts extends StatefulWidget {
   final List<Map<String, dynamic>> shifts;
@@ -87,62 +88,20 @@ class _UpComingShiftsState extends State<UpComingShifts> {
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: SizedBox(
-              height: 75,
+              height: 95,
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   final day = weekIntervals[index];
                   final isSameDate = isSameDay(day, selectedDate);
-                  return GestureDetector(
-                    onTap: () {
+                  return DateSelector(
+                    onTap: (){
                       setState(() {
                         selectedDate = day;
                       });
                     },
-                    child: Container(
-                      width: 60,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: AppTheme.card,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isSameDate
-                              ? AppTheme.primary
-                              : AppTheme.border,
-                        ),
-                      ),
-                      child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          spacing: 2,
-                          children: [
-                            Text(
-                              format(day, 'E'),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 8,
-                                color: AppTheme.mutedForeground,
-                              ),
-                            ),
-                            Text(
-                              format(day, 'd'),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              format(day, 'MMM'),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 8,
-                                color: AppTheme.mutedForeground,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    active: isSameDate,
+                    day: day,
+                    hasEvent: false,
                   );
                 },
                 itemCount: weekIntervals.length,

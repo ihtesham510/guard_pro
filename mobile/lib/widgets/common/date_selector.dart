@@ -28,10 +28,16 @@ class DateSelector extends StatelessWidget {
         decoration: BoxDecoration(
           color: active
               ? AppTheme.primary
-              : hasEvent ?AppTheme.card : AppTheme.background.withValues(alpha: 0.05),
+              : hasEvent
+              ? AppTheme.card
+              : AppTheme.background.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(40),
           border: Border.all(
-            color: active ? AppTheme.background : hasEvent  ? AppTheme.card : AppTheme.border,
+            color: active
+                ? AppTheme.background
+                : hasEvent
+                ? AppTheme.card
+                : AppTheme.border,
             width: 1,
           ),
         ),
@@ -48,9 +54,7 @@ class DateSelector extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontWeight: FontWeight.w800,
                     fontSize: 32,
-                    color: active
-                        ? AppTheme.background
-                        : AppTheme.foreground,
+                    color: active ? AppTheme.background : AppTheme.foreground,
                   ),
                 ),
                 if (hasEvent)
@@ -73,11 +77,9 @@ class DateSelector extends StatelessWidget {
             Text(
               format(day, 'EEE'),
               style: GoogleFonts.inter(
-                fontWeight: active ? FontWeight.w600 :  FontWeight.w800,
+                fontWeight: active ? FontWeight.w600 : FontWeight.w800,
                 fontSize: 11,
-                color: active
-                    ? AppTheme.background
-                    : AppTheme.foreground,
+                color: active ? AppTheme.background : AppTheme.foreground,
               ),
             ),
           ],

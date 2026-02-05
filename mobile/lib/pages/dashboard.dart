@@ -24,7 +24,6 @@ class Dashboard extends StatelessWidget {
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppTheme.card,
-          border: Border(top: BorderSide(color: AppTheme.border, width: 1)),
         ),
         child: SafeArea(
           child: Padding(

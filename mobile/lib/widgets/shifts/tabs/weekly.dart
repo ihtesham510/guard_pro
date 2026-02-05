@@ -1,6 +1,7 @@
 import 'package:date_kit/date_kit.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/theme/app_theme.dart';
 import 'package:mobile/widgets/common/date_selector.dart';
@@ -332,27 +333,59 @@ class _WeeklyState extends State<Weekly> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Row(
+          spacing: 6,
+          children: [
+            Text(
+              'Shifts for Day',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.foreground,
+              ),
+            ),
+
+            CircleAvatar(
+              radius: 14,
+              backgroundColor: AppTheme.primary.withValues(alpha: 0.04),
+              child: Text(
+                shiftsForDay.length.toString(),
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.primary,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
         if (shiftsForDay.isEmpty)
           Container(
-            padding: const EdgeInsets.all(40),
-            decoration: BoxDecoration(
-              color: AppTheme.card,
-              borderRadius: BorderRadius.circular(12),
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 64.0),
             child: Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    FluentIcons.calendar_cancel_24_regular,
-                    size: 48,
-                    color: AppTheme.mutedForeground,
+                  SvgPicture.asset(
+                    'assets/svgs/empty.svg',
+                    width: 170,
+                    height: 170,
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   Text(
                     'No shifts scheduled',
                     style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.foreground,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Select another day to view other shifts.',
+                    style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
                       color: AppTheme.mutedForeground,
                     ),
                   ),
@@ -365,147 +398,58 @@ class _WeeklyState extends State<Weekly> {
             final shift = entry.value;
             final site = shift['site'];
             final siteName = site?['name'] ?? 'Unknown Site';
-            final address = site?['address'];
-            final addressText = address != null
-                ? '${address['address_line_1']}, ${address['city']}'
-                : 'No address';
             final startTime = shift['start_time'] ?? 'N/A';
             final endTime = shift['end_time'] ?? 'N/A';
-            final shiftName = shift['name'] ?? 'Unnamed Shift';
-            final payRate = shift['pay_rate'];
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 16),
+              margin: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 color: AppTheme.card,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primary.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            FluentIcons.calendar_clock_24_filled,
-                            size: 20,
-                            color: AppTheme.primary,
-                          ),
-                        ),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                shiftName,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppTheme.cardForeground,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Icon(FluentIcons.calendar_clock_24_filled, size: 38),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  siteName,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                siteName,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: AppTheme.mutedForeground,
+                                const SizedBox(height: 4),
+                                Text(
+                                  '$startTime - $endTime',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: AppTheme.mutedForeground,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Details
-                  Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      children: [
-                        _buildDetailRow(
-                          FluentIcons.clock_24_filled,
-                          'Time',
-                          '$startTime - $endTime',
-                        ),
-                        SizedBox(height: 10),
-                        _buildDetailRow(
-                          FluentIcons.location_24_filled,
-                          'Location',
-                          addressText,
-                        ),
-                        if (payRate != null) ...[
-                          SizedBox(height: 10),
-                          _buildDetailRow(
-                            FluentIcons.money_24_regular,
-                            'Pay Rate',
-                            '\$$payRate/hr',
+                              ],
+                            ),
                           ),
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                    const Icon(FluentIcons.arrow_up_right_24_regular, size: 28),
+                  ],
+                ),
               ),
             );
           }),
-      ],
-    );
-  }
-
-  Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: AppTheme.background,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: EdgeInsets.all(4),
-          child: Icon(icon, size: 18, color: AppTheme.mutedForeground),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppTheme.mutedForeground,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 2),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppTheme.cardForeground,
-                  fontWeight: FontWeight.w500,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }

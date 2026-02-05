@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const Color background = Color(0xFFF2F3F4);
+  static const Color background = Color(0xFFffffff);
 
-  static const Color foreground = Color(0xFF1C1C1C);
+  static const Color foreground = Color(0xFF464646);
 
-  static const Color card = Color(0xFFFFFFFF);
+  static const Color card = Color(0xfff5f6fa);
 
   static const Color cardForeground = Color(0xFF1C1C1C);
 
@@ -48,6 +48,7 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: background,
       cardColor: card,
+      iconTheme: const IconThemeData(color: foreground),
       cardTheme: CardThemeData(
         color: card,
         elevation: 0,
@@ -97,7 +98,7 @@ class AppTheme {
           ),
         ),
       ),
-      textTheme: GoogleFonts.poppinsTextTheme(
+      textTheme: GoogleFonts.nunitoSansTextTheme(
         const TextTheme(
           displayLarge: TextStyle(color: foreground),
           displayMedium: TextStyle(color: foreground),

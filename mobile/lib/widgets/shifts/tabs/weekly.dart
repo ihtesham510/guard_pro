@@ -1,27 +1,19 @@
 import 'package:date_kit/date_kit.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/theme/app_theme.dart';
 import 'package:mobile/widgets/common/date_selector.dart';
-import 'package:mobile/widgets/shifts/shift_for_day.dart';
 
-class Weekly extends StatefulWidget {
+class Weekly extends StatelessWidget {
+  final DateTime selectedDay;
   final List<Map<String, dynamic>> shifts;
-  const Weekly({super.key, required this.shifts});
-
-  @override
-  State<Weekly> createState() => _WeeklyState();
-}
-
-class _WeeklyState extends State<Weekly> {
-  late final List<Map<String, dynamic>> shifts = widget.shifts;
-  DateTime selectedDay = DateTime.now();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final ValueChanged<DateTime> onDaySelected;
+  const Weekly({
+    super.key,
+    required this.shifts,
+    required this.selectedDay,
+    required this.onDaySelected,
+  });
 
   List<DateTime> generateWeekIntervals(DateTime startDate, DateTime endDate) {
     List<DateTime> intervals = [];
@@ -38,12 +30,6 @@ class _WeeklyState extends State<Weekly> {
   DateTime _getMonday(DateTime date) {
     final dayOfWeek = date.weekday;
     return date.subtract(Duration(days: dayOfWeek - 1));
-  }
-
-  List<DateTime> _getWeekDays(DateTime monday) {
-    final startOfTheWeek = startOfWeek(selectedDay);
-    final endOfTheWeek = endOfWeek(selectedDay);
-    return generateWeekIntervals(startOfTheWeek, endOfTheWeek);
   }
 
   bool _isDayInOffDays(DateTime day, List<dynamic>? offDays) {
@@ -165,21 +151,7 @@ class _WeeklyState extends State<Weekly> {
   }
 
   void _onDaySelected(DateTime day) {
-    setState(() {
-      selectedDay = day;
-    });
-  }
-
-  void _previousWeek() {
-    setState(() {
-      selectedDay = selectedDay.subtract(const Duration(days: 7));
-    });
-  }
-
-  void _nextWeek() {
-    setState(() {
-      selectedDay = selectedDay.add(const Duration(days: 7));
-    });
+    onDaySelected(day);
   }
 
   @override
@@ -217,110 +189,31 @@ class _WeeklyState extends State<Weekly> {
     }
 
     final monday = _getMonday(selectedDay);
-    final weekDays = _getWeekDays(monday);
-    final weekRange =
-        '${format(weekDays.first, 'MMM dd')} - ${format(weekDays.last, 'MMM dd')}';
 
     final weekIntervals = generateWeekIntervals(
       monday,
       monday.add(const Duration(days: 6)),
     );
+    return SizedBox(
+      height: 95,
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          final day = weekIntervals[index];
+          final isSameDate = isSameDay(day, selectedDay);
+          final events = _getEventsForDay(day);
+          final hasEvents = events > 0;
 
-    return Scaffold(
-      backgroundColor: AppTheme.background,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20),
-              Text(
-                format(selectedDay, 'EEEE, MMMM d'),
-                style: GoogleFonts.inter(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: AppTheme.foreground,
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    weekRange,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.foreground,
-                    ),
-                  ),
-                  Row(
-                    spacing: 8,
-                    children: [
-                      GestureDetector(
-                        onTap: _previousWeek,
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppTheme.card,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            FluentIcons.chevron_left_24_regular,
-                            color: AppTheme.cardForeground,
-                            size: 16,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: _nextWeek,
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppTheme.card,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            FluentIcons.chevron_right_24_regular,
-                            color: AppTheme.cardForeground,
-                            size: 16,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              SizedBox(
-                height: 95,
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    final day = weekIntervals[index];
-                    final isSameDate = isSameDay(day, selectedDay);
-                    final events = _getEventsForDay(day);
-                    final hasEvents = events > 0;
-
-                    return DateSelector(
-                      active: isSameDate,
-                      day: day,
-                      hasEvent: hasEvents,
-                      onTap: () {
-                        _onDaySelected(day);
-                      },
-                    );
-                  },
-                  itemCount: weekIntervals.length,
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-              SizedBox(height: 24),
-              ShiftForDay(shifts: shifts, selectedDay: selectedDay),
-              SizedBox(height: 24),
-            ],
-          ),
-        ),
+          return DateSelector(
+            active: isSameDate,
+            day: day,
+            hasEvent: hasEvents,
+            onTap: () {
+              _onDaySelected(day);
+            },
+          );
+        },
+        itemCount: weekIntervals.length,
+        scrollDirection: Axis.horizontal,
       ),
     );
   }

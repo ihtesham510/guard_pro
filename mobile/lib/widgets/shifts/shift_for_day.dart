@@ -136,36 +136,36 @@ class ShiftForDay extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          spacing: 6,
-          children: [
-            Text(
-              'Shifts for Day',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.foreground,
-              ),
-            ),
-
-            CircleAvatar(
-              radius: 14,
-              backgroundColor: AppTheme.primary.withValues(alpha: 0.04),
-              child: Text(
-                shiftsForDay.length.toString(),
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primary,
+        if (shiftsForDay.isNotEmpty)
+          Row(
+            spacing: 6,
+            children: [
+              Text(
+                'Shifts for Day',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.foreground,
                 ),
               ),
-            ),
-          ],
-        ),
+              CircleAvatar(
+                radius: 14,
+                backgroundColor: AppTheme.primary.withValues(alpha: 0.04),
+                child: Text(
+                  shiftsForDay.length.toString(),
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
         const SizedBox(height: 12),
         if (shiftsForDay.isEmpty)
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 64.0),
+            padding: const EdgeInsets.symmetric(vertical: 34.0),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

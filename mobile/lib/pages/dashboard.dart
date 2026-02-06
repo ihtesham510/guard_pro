@@ -23,15 +23,19 @@ class Dashboard extends StatelessWidget {
       body: navigationShell,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: AppTheme.card,
+          color: AppTheme.foreground,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
         ),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12),
             child: GNav(
-              color: AppTheme.mutedForeground,
+              color: AppTheme.background,
               backgroundColor: Colors.transparent,
-              activeColor: AppTheme.primary,
+              activeColor: AppTheme.foreground,
               gap: 8,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               selectedIndex: navigationShell.currentIndex,
@@ -41,21 +45,29 @@ class Dashboard extends StatelessWidget {
                   icon: activeIndex == 0
                       ? FluentIcons.home_16_filled
                       : FluentIcons.home_16_regular,
+                  text: 'Home',
+                  backgroundColor: AppTheme.background,
                 ),
                 GButton(
                   icon: activeIndex == 1
                       ? FluentIcons.clock_16_filled
                       : FluentIcons.clock_16_regular,
+                  text: 'Shifts',
+                  backgroundColor: AppTheme.background,
                 ),
                 GButton(
                   icon: activeIndex == 2
                       ? FluentIcons.money_16_filled
                       : FluentIcons.money_16_regular,
+                  text: 'Payments',
+                  backgroundColor: AppTheme.background,
                 ),
                 GButton(
                   icon: activeIndex == 3
                       ? FluentIcons.person_16_filled
                       : FluentIcons.person_16_regular,
+                  text: 'Profile',
+                  backgroundColor: AppTheme.background,
                 ),
               ],
             ),

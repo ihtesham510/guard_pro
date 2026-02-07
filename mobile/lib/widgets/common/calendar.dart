@@ -1,41 +1,19 @@
 import 'package:date_kit/date_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/theme/app_theme.dart';
+import 'package:mobile/utils/diagnonal_line_painter.dart';
 
 class Calendar extends StatelessWidget {
   static const weeks = ['Mo', 'Tu', 'We', 'Tu', 'Fr', 'Sa', 'Su'];
   final ValueChanged<DateTime> onDateSelect;
   final DateTime selectedDay;
+  final bool Function(DateTime) hasEvent;
   const Calendar({
     super.key,
     required this.onDateSelect,
     required this.selectedDay,
+    required this.hasEvent,
   });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [_buildWeeksDays(), const SizedBox(height: 8), _buildDays()],
-    );
-  }
-
-  Widget _buildWeeksDays() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: weeks.map((day) {
-        return Center(
-          child: Text(
-            day,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.mutedForeground,
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
 
   List<DateTime> _getDaysInMonth(DateTime month) {
     final firstDayOfMonth = DateTime(month.year, month.month, 1);
@@ -63,6 +41,31 @@ class Calendar extends StatelessWidget {
     }
 
     return days;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [_buildWeeksDays(), const SizedBox(height: 8), _buildDays()],
+    );
+  }
+
+  Widget _buildWeeksDays() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: weeks.map((day) {
+        return Center(
+          child: Text(
+            day,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.mutedForeground,
+            ),
+          ),
+        );
+      }).toList(),
+    );
   }
 
   Widget _buildDays() {
@@ -109,37 +112,86 @@ class Calendar extends StatelessWidget {
     bool isSelected,
     bool isToday,
   ) {
+    final bool dayHasEvent = hasEvent(day);
+    if (!isCurrentMonth) {
+      return GestureDetector(
+        onTap: () => onDateSelect(day),
+        child: Container(
+          padding: EdgeInsets.all(5),
+          height: 40,
+          width: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: AppTheme.muted, width: 1),
+          ),
+          child: Center(
+            child: Text(
+              day.day.toString(),
+              style: TextStyle(color: Colors.transparent),
+            ),
+          ),
+        ),
+      );
+    }
+    if (dayHasEvent) {
+      return GestureDetector(
+        onTap: () => onDateSelect(day),
+        child: Container(
+          padding: EdgeInsets.all(5),
+          height: 40,
+          width: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppTheme.primary,
+            border: Border.all(color: AppTheme.primary, width: 1),
+          ),
+          child: Center(
+            child: Text(
+              day.day.toString(),
+              style: TextStyle(color: AppTheme.background),
+            ),
+          ),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () => onDateSelect(day),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        height: 40,
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppTheme.primary
-              : isToday
-              ? AppTheme.primary.withValues(alpha: 0.1)
-              : Colors.transparent,
-          border: Border.all(
-            color: isCurrentMonth
-                ? AppTheme.mutedForeground
-                : AppTheme.mutedForeground.withValues(alpha: 0.5),
-          ),
           shape: BoxShape.circle,
+          color: Colors.transparent,
+          border: Border.all(
+            color: isSelected ? AppTheme.primary : AppTheme.muted,
+          ),
         ),
         child: Center(
-          child: Text(
-            '${day.day}',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: isSelected || isToday
-                  ? FontWeight.w600
-                  : FontWeight.normal,
-              color: isSelected
-                  ? AppTheme.primaryForeground
-                  : isCurrentMonth
-                  ? AppTheme.foreground
-                  : Colors.transparent,
+          child: Container(
+            margin: const EdgeInsets.all(2.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100.0),
+              child: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(shape: BoxShape.circle),
+                child: CustomPaint(
+                  painter: DiagonalLinesPainter(
+                    color: isSelected ? AppTheme.primary : AppTheme.muted,
+                    strokeWidth: 1.5,
+                    spacing: 8.0,
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                      style: TextStyle(
+                        color: isSelected
+                            ? AppTheme.primaryForeground
+                            : AppTheme.mutedForeground,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),

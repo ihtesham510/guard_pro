@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/providers/auth_provider.dart';
 import 'package:mobile/theme/app_theme.dart';
+import 'package:mobile/utils/shifts.dart';
 import 'package:mobile/widgets/shifts/shift_for_day.dart';
 import 'package:mobile/widgets/shifts/tabs/monthly.dart';
 import 'package:mobile/widgets/shifts/tabs/weekly.dart';
@@ -45,6 +46,16 @@ class _ShiftsTabState extends State<ShiftsTab> {
     }
 
     return intervals;
+  }
+
+  bool _hasShiftsForDay(DateTime day) {
+    if (shifts != null) {
+      final Shifts shift = Shifts(shifts!);
+      final shiftsForDay = shift.getShiftsForDay(day);
+      return shiftsForDay.isNotEmpty;
+    } else {
+      return false;
+    }
   }
 
   void _previous() {
@@ -108,10 +119,10 @@ class _ShiftsTabState extends State<ShiftsTab> {
 
   Widget _switchView() {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: AppTheme.card,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: [
@@ -139,10 +150,10 @@ class _ShiftsTabState extends State<ShiftsTab> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.background : Colors.transparent,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(14),
           boxShadow: isSelected
               ? [
                   BoxShadow(
@@ -157,7 +168,7 @@ class _ShiftsTabState extends State<ShiftsTab> {
           label,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             color: AppTheme.foreground,
           ),
@@ -246,6 +257,9 @@ class _ShiftsTabState extends State<ShiftsTab> {
                 ? Weekly(
                     shifts: shifts,
                     selectedDay: selectedDay,
+                    hasEvent: (day) {
+                      return _hasShiftsForDay(day);
+                    },
                     onDaySelected: (day) {
                       setState(() {
                         selectedDay = day;
@@ -255,6 +269,9 @@ class _ShiftsTabState extends State<ShiftsTab> {
                 : Monthly(
                     shifts: shifts,
                     selectedDay: selectedDay,
+                    hasEvent: (day) {
+                      return _hasShiftsForDay(day);
+                    },
                     onDaySelected: (day) {
                       setState(() {
                         selectedDay = day;

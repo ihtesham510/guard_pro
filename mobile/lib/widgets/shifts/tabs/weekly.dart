@@ -8,11 +8,13 @@ class Weekly extends StatelessWidget {
   final DateTime selectedDay;
   final List<Map<String, dynamic>> shifts;
   final ValueChanged<DateTime> onDaySelected;
+  final bool Function(DateTime) hasEvent;
   const Weekly({
     super.key,
     required this.shifts,
     required this.selectedDay,
     required this.onDaySelected,
+    required this.hasEvent,
   });
 
   List<DateTime> generateWeekIntervals(DateTime startDate, DateTime endDate) {

@@ -7,11 +7,13 @@ class Monthly extends StatelessWidget {
   final ValueChanged<DateTime> onDaySelected;
   final DateTime selectedDay;
   final List<Map<String, dynamic>> shifts;
+  final bool Function(DateTime) hasEvent;
   const Monthly({
     super.key,
     required this.onDaySelected,
     required this.selectedDay,
     required this.shifts,
+    required this.hasEvent,
   });
 
   void _onDaySelected(DateTime selectedDay) {
@@ -59,6 +61,7 @@ class Monthly extends StatelessWidget {
         onDateSelect: (date) {
           _onDaySelected(date);
         },
+        hasEvent: hasEvent,
       ),
     );
   }

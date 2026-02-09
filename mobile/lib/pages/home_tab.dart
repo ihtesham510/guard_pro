@@ -1,13 +1,13 @@
 import 'package:date_kit/date_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/providers/auth_provider.dart';
+import 'package:mobile/widgets/common/overlays/shift_details.dart';
 import 'package:mobile/widgets/home/header.dart';
 import 'package:mobile/widgets/home/no_shift.dart';
 import 'package:mobile/widgets/home/no_shift_card.dart';
 import 'package:mobile/widgets/home/overlays/check_in.dart';
 import 'package:mobile/widgets/home/overlays/messages.dart';
 import 'package:mobile/widgets/home/overlays/notifications.dart';
-import 'package:mobile/widgets/home/overlays/shift_details.dart';
 import 'package:mobile/widgets/home/shift_info.dart';
 import 'package:mobile/widgets/home/upcoming_shifts.dart';
 import 'package:provider/provider.dart';

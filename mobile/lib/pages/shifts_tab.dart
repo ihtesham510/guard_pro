@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/providers/auth_provider.dart';
 import 'package:mobile/theme/app_theme.dart';
 import 'package:mobile/utils/shifts.dart';
+import 'package:mobile/widgets/common/overlays/shift_details.dart';
 import 'package:mobile/widgets/shifts/shift_for_day.dart';
 import 'package:mobile/widgets/shifts/tabs/monthly.dart';
 import 'package:mobile/widgets/shifts/tabs/weekly.dart';
@@ -18,16 +19,64 @@ class ShiftsTab extends StatefulWidget {
   State<ShiftsTab> createState() => _ShiftsTabState();
 }
 
-class _ShiftsTabState extends State<ShiftsTab> {
+class _ShiftsTabState extends State<ShiftsTab>
+    with SingleTickerProviderStateMixin {
   List<Map<String, dynamic>>? shifts;
   List<Map<String, dynamic>>? leaveRequest;
   DateTime selectedDay = DateTime.now();
   bool weekView = true;
   bool hasLoadedData = false;
+  OverlayEntry? _overlayEntry;
+  late final AnimationController _animationController;
+  late final Animation<Offset> _offsetAnimation;
 
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    _offsetAnimation =
+        Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _hideOverlay();
+    super.dispose();
+  }
+
+  bool get _isOverlayShown => _overlayEntry != null;
+
+  void _hideOverlay() {
+    if (_isOverlayShown) {
+      _animationController.reverse().then((_) {
+        _overlayEntry?.remove();
+        _overlayEntry = null;
+      });
+    }
+  }
+
+  void _showOverlay(Widget overlayChild) {
+    if (_isOverlayShown) {
+      return;
+    }
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) {
+        return SlideTransition(position: _offsetAnimation, child: overlayChild);
+      },
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+    _animationController.forward();
   }
 
   @override
@@ -279,7 +328,15 @@ class _ShiftsTabState extends State<ShiftsTab> {
                     },
                   ),
             SizedBox(height: 24),
-            ShiftForDay(shifts: shifts, selectedDay: selectedDay),
+            ShiftForDay(
+              shifts: shifts,
+              selectedDay: selectedDay,
+              onShiftTap: (shift) {
+                _showOverlay(
+                  ShiftDetailsOverlay(onClose: _hideOverlay, shift: shift),
+                );
+              },
+            ),
             SizedBox(height: 24),
           ],
         ),

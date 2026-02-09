@@ -8,10 +8,12 @@ import 'package:mobile/widgets/common/shift_info.dart';
 class ShiftForDay extends StatelessWidget {
   final List<Map<String, dynamic>> shifts;
   final DateTime selectedDay;
+  final Function(Map<String, dynamic>)? onShiftTap;
   const ShiftForDay({
     super.key,
     required this.shifts,
     required this.selectedDay,
+    this.onShiftTap,
   });
 
   @override
@@ -84,7 +86,10 @@ class ShiftForDay extends StatelessWidget {
         else
           ...shiftsForDay.asMap().entries.map((entry) {
             final shift = entry.value;
-            return ShiftInfo(shift: shift);
+            return ShiftInfo(
+              shift: shift,
+              onTap: onShiftTap != null ? () => onShiftTap!(shift) : null,
+            );
           }),
       ],
     );
